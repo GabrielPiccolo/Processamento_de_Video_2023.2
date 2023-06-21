@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 50px;
+      color: black;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 24px;
+      font-weight: bolder;
+      padding-bottom: 30px;
+    }
+
+    h2 {
+      color: #666;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 20px 0px 20px 0px;
+    }
+
+    p {
+      color: black;
+      font-size: 16px;
+    }
+
+    code {
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      background-color: #f5f5f5;
+      padding: 2px 4px;
+    }
+
+    pre {
+      background-color: #f5f5f5;
+      padding: 10px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Lab_2_Filtragem de Imagens</h1>
+
+  <div class="section">
+    <h2>1. Introdução:</h2>
+    <p>
+    Neste laboratório utilizamos o ubuntu - linux, para usar a biblioteca openCV,NUMPY, E MATPLOTLIB, e conhecer os comandos para filtrar  imagens.
+        </p>
+  </div>
+
+  <div class="section">
+    <h2>2. Fundamentos básicos:</h2>
+    <p>Saber trabalhar com html, python(bibliotecas numpy, openCV)<br>
+    Conhecimentos de Linux(Ubuntu)<br>
+    Conhecimento de lógica de programação no terminal<br>
+    Conhecer os comandos para filtrar imagens.
+</p>
+  </div>
+
+  <div class="section">
+    <h2>3. Materiais e Métodos:</h2>
+    <p>Usamos os arquivos dados no roteiro para seguir e resolver os problemas através do terminal no ubuntu. Para filtrar as imagens usamos openCV. As imagens usadas foram capturadas no lab01.
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>4. Resultados e Análises:</h2>
+
+    <div class="subsection">
+      <h3>2D Convolution ( Image Filtering )
+    
+    <div class="subsection">
+      <p>Este código utiliza a biblioteca OpenCV (cv2) e a biblioteca matplotlib para carregar uma imagem, aplicar um filtro de média (averaging) nela e exibir a imagem original e a imagem filtrada lado a lado em um gráfico.
+
+        Carrega uma imagem utilizando a função cv.imread(). Neste exemplo, o arquivo 'imagem1.jpeg' é lido e a imagem é atribuída à variável img.
+        
+        Verifica se a imagem foi lida corretamente. Se a imagem for None, ou seja, não foi lida corretamente, uma mensagem de erro é exibida.
+        
+        Define um kernel (filtro) de média 5x5 utilizando a função np.ones(). O kernel é uma matriz de valores 1 com dimensões 5x5.
+        
+        Aplica o filtro 2D na imagem utilizando a função cv.filter2D(). O filtro é aplicado com a função média, especificada pelo kernel definido anteriormente. O resultado é atribuído à variável dst.
+        
+        Utiliza a biblioteca pyplot para exibir as imagens em um gráfico. O gráfico é dividido em duas partes usando a função plt.subplot(). A primeira parte (subplot(121)) mostra a imagem original, a segunda parte (subplot(122)) mostra a imagem filtrada.
+        Usa a função plt.imshow() para exibir as imagens. A imagem original é exibida na primeira parte do gráfico, enquanto a imagem filtrada é exibida na segunda parte.
+        
+        Usa a função plt.title() para adicionar títulos às partes do gráfico.
+        
+        Usa a função plt.xticks([]) e plt.yticks([]) para remover as marcações dos eixos x e y nas duas partes do gráfico.
+        
+        Chama a função plt.show() para exibir o gráfico com as imagens.
+        
+        Em resumo, o código carrega uma imagem, aplica um filtro de média 5x5 nela utilizando o OpenCV e exibe a imagem original e a imagem filtrada em um gráfico utilizando a biblioteca matplotlib. Isso permite comparar visualmente os resultados antes e depois da aplicação do filtro de média.
+        </p>
+    </div>
+
+    <div class="subsection">
+        <p>Codigo:</p>
+        <pre>
+            <code>
+                import numpy as np
+                import cv2 as cv
+                from matplotlib import pyplot as plt
+                img = cv.imread('imagem1.jpeg')
+                assert img is not None, "file could not be read, check with os.path.exists()"
+                kernel = np.ones((5,5),np.float32)/25
+                dst = cv.filter2D(img,-1,kernel)
+                plt.subplot(121),plt.imshow(img),plt.title('Original')
+                plt.xticks([]), plt.yticks([])
+                plt.subplot(122),plt.imshow(dst),plt.title('Averaging')
+                plt.xticks([]), plt.yticks([])
+                plt.show()
+            </code>
+        </pre>
+        <p>Resultado:</p>
+        <img src="../../../Assets/Imgs/2d convolution.PNG" width="500px" height="auto"/>
+
+        <p>Podemos notar que o codigo traz a foto com filtro, porem ela esta azul ao O OpenCV normalmente assume que as imagens estão no formato BGR (azul, verde, vermelho) ao ler arquivos .jpeg. No entanto, algumas câmeras e programas de edição podem utilizar espaços de cor diferentes, como RGB (vermelho, verde, azul).
+        </p>
+        <p>Codigo com cor RGB:</p>
+        <pre><code>
+            import numpy as np
+                import cv2 as cv
+                from matplotlib import pyplot as plt
+
+                img = cv.imread("imagem1.jpeg")
+                assert img is not None, "file could not be read, check with os.path.exists()"
+
+                # Converter a imagem para o espaço de cor RGB
+                img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+
+                kernel = np.ones((5,5), np.float32)/25
+                dst = cv.filter2D(img_rgb, -1, kernel)
+
+                # Exibir as imagens
+                plt.subplot(121), plt.imshow(img_rgb), plt.title('Original')
+                plt.xticks([]), plt.yticks([])
+                plt.subplot(122), plt.imshow(dst), plt.title('Averaging')
+                plt.xticks([]), plt.yticks([])
+                plt.show()
+
+                # Salvar a imagem filtrada
+                cv.imwrite('imagem_filtrada.jpeg', cv.cvtColor(dst, cv.COLOR_RGB2BGR))
+        </code></pre>
+
+        <p>Usando esse último comando junto ao código podemos salvar a imagem filtrada, caso nao queira salvar basta remover a última linha do codigo.
+        </p>
+
+        <p>Resultado:</p>
+        <img src="../../../Assets/Imgs/2d convolutionnormal.PNG" width="500px" height="auto"/>
+
+        <div class="subsection">
+            <h3>Image Blurring (Image Smoothing)
+                <p>1. Averaging
+                </p>
+
+          
+          <div class="subsection">
+            <p>A função cv.blur(): Essa função aplica um filtro de média simples na imagem, onde cada pixel na imagem de saída é a média dos valores dos pixels em uma vizinhança definida. A vizinhança é especificada pelo tamanho do kernel passado como parâmetro. Por exemplo, ao usar (5,5) como tamanho do kernel, cada pixel na imagem de saída será a média dos valores dos pixels em uma área 5x5 vizinha ao pixel correspondente na imagem original.
+
+                Este código  utiliza a biblioteca OpenCV (cv2) e a biblioteca matplotlib para carregar uma imagem, aplicar um filtro de desfoque (blur) nela e exibir a imagem original e a imagem desfocada lado a lado em um gráfico.
+                
+                Carrega uma imagem utilizando a função cv.imread(). Neste exemplo, o arquivo 'opencv-logo-white.png' é lido e a imagem é atribuída à variável img.
+                
+                Verifica se a imagem foi lida corretamente. Se a imagem for None, ou seja, não foi lida corretamente, uma mensagem de erro é exibida.
+                
+                Aplica o filtro de desfoque na imagem utilizando a função cv.blur(). Neste exemplo, um filtro de desfoque de tamanho 5x5 é aplicado à imagem. O resultado é atribuído à variável blur.
+                
+                Utiliza a biblioteca pyplot para exibir as imagens em um gráfico. O gráfico é dividido em duas partes usando a função plt.subplot(). A primeira parte (subplot(121)) mostra a imagem original, a segunda parte (subplot(122)) mostra a imagem desfocada.
+                
+                Usa a função plt.imshow() para exibir as imagens. A imagem original é exibida na primeira parte do gráfico, enquanto a imagem desfocada é exibida na segunda parte.
+                
+                Usa a função plt.title() para adicionar títulos às partes do gráfico.
+                
+                Usa a função plt.xticks([]) e plt.yticks([]) para remover as marcações dos eixos x e y nas duas partes do gráfico.
+                
+                Chama a função plt.show() para exibir o gráfico com as imagens.
+                
+                Em resumo, o código carrega uma imagem, aplica um filtro de desfoque nela utilizando o OpenCV e exibe a imagem original e a imagem desfocada em um gráfico utilizando a biblioteca matplotlib. Isso permite comparar visualmente os resultados antes e depois da aplicação do filtro de desfoque.
+                
+                Aqui a imagem também fica azul então usamos o mesmo comando utilizado no código anterior para deixá-la normal.                
+              </p>
+          </div>
+
+          <p>Codigo:
+        </p>
+          <pre><code>
+            import numpy as np
+                import cv2 as cv
+                from matplotlib import pyplot as plt
+
+                img = cv.imread('imagem2.jpeg')
+                assert img is not None, "file could not be read, check with os.path.exists()"
+
+                img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)  # Converter para espaço de cor RGB
+
+                blur = cv.blur(img_rgb, (5, 5))
+
+                plt.subplot(121), plt.imshow(img_rgb), plt.title('Original')
+                plt.xticks([]), plt.yticks([])
+                plt.subplot(122), plt.imshow(blur), plt.title('Blurred')
+                plt.xticks([]), plt.yticks([])
+                plt.show()
+
+                # Salvar a imagem filtrada
+                cv.imwrite('imagem_filtrada.jpeg', cv.cvtColor(blur, cv.COLOR_RGB2BGR))
+
+          </code></pre>
+
+          <p>Resultado:</p>
+        <img src="../../../Assets/Imgs/Averaging.PNG" width="500px" height="auto"/>
+
+
+        <p>2. Gaussian Blurring</p>
+
+  
+  <div class="subsection">
+    <p>Usaremos o mesmo código do exercicio anterior porem agora com a funçao cv.GaussianBlur(): Essa função aplica um filtro de desfoque gaussiano na imagem, onde cada pixel na imagem de saída é calculado como uma média ponderada dos valores dos pixels em uma vizinhança definida. A vizinhança é especificada pelo tamanho do kernel passado como parâmetro, assim como no cv.blur(). No entanto, o cv.GaussianBlur() também leva em consideração os pesos específicos para cada pixel na vizinhança, com base na distribuição gaussiana. Isso resulta em um efeito de desfoque mais suave e sutil em comparação ao cv.blur().             
+      </p>
+  </div>
+
+  <p>Codigo:
+</p>
+  <pre><code>
+    import numpy as np
+    import cv2 as cv
+    from matplotlib import pyplot as plt
+
+    img = cv.imread('imagem2.jpeg')
+    assert img is not None, "file could not be read, check with os.path.exists()"
+
+    img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)  # Converter para espaço de cor RGB
+
+    blur = cv.GaussianBlur(img_rgb,(5,5),0)
+
+    plt.subplot(121), plt.imshow(img_rgb), plt.title('Original')
+    plt.xticks([]), plt.yticks([])
+    plt.subplot(122), plt.imshow(blur), plt.title('Blurred')
+    plt.xticks([]), plt.yticks([])
+    plt.show()
+
+    # Salvar a imagem filtrada
+    cv.imwrite('imagem_filtrada.jpeg', cv.cvtColor(blur, cv.COLOR_RGB2BGR))
+
+
+  </code></pre>
+
+  <p>Resultado:</p>
+<img src="../../../Assets/Imgs/gaublur.PNG" width="500px" height="auto"/>
+
+<p>3. Median Blurring
+</p>
+
+  
+<div class="subsection">
+  <p>Usaremos o mesmo código do exercicio anterior porem agora com a funçao cv.medianBlur(): Essa função aplica um filtro de desfoque mediano, onde cada pixel na imagem de saída é calculado como a mediana dos valores dos pixels em uma vizinhança definida. O filtro de desfoque mediano é especialmente eficaz para remover ruídos de sal e pimenta na imagem, preservando melhor os detalhes da imagem em comparação aos filtros de média.
+          
+    </p>
+</div>
+
+<p>Codigo:
+</p>
+<pre><code>
+    import numpy as np
+    import cv2 as cv
+    from matplotlib import pyplot as plt
+
+    img = cv.imread('imagem1.jpeg')
+    assert img is not None, "file could not be read, check with os.path.exists()"
+
+    img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)  # Converter para espaço de cor RGB
+
+    median = cv.medianBlur(img_rgb,5)
+
+    plt.subplot(121), plt.imshow(img_rgb), plt.title('Original')
+    plt.xticks([]), plt.yticks([])
+    plt.subplot(122), plt.imshow(median), plt.title('Blurred_median')
+    plt.xticks([]), plt.yticks([])
+    plt.show()
+
+    # Salvar a imagem filtrada
+    cv.imwrite('imagem_filtrada.jpeg', cv.cvtColor(median, cv.COLOR_RGB2BGR))
+</code></pre>
+
+<p>Resultado:</p>
+<img src="../../../Assets/Imgs/medianblur.PNG" width="500px" height="auto"/>
+
+<p>4. Bilateral Filtering
+
+</p>
+
+  
+<div class="subsection">
+  <p>Ainda usando o mesmo codigo porem agora com a  função cv.bilateralFilter()  que aplica um filtro bilateral na imagem, preservando as bordas enquanto suaviza o restante da imagem. O filtro bilateral leva em consideração a intensidade dos pixels e as diferenças de cor, garantindo que pixels semelhantes sejam preservados e pixels diferentes sejam suavizados.
+          
+    </p>
+</div>
+
+<p>Codigo:
+</p>
+<pre><code>
+    import numpy as np
+    import cv2 as cv
+    from matplotlib import pyplot as plt
+
+    img = cv.imread('imagem1.jpeg')
+    assert img is not None, "file could not be read, check with os.path.exists()"
+
+    img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)  # Converter para espaço de cor RGB
+
+    blur = cv.bilateralFilter(img_rgb,9,75,75)
+
+    plt.subplot(121), plt.imshow(img_rgb), plt.title('Original')
+    plt.xticks([]), plt.yticks([])
+    plt.subplot(122), plt.imshow(blur), plt.title('Bilateral Filtering')
+    plt.xticks([]), plt.yticks([])
+    plt.show()
+
+    # Salvar a imagem filtrada
+    cv.imwrite('imagem_filtrada.jpeg', cv.cvtColor(blur, cv.COLOR_RGB2BGR))
+
+
+</code></pre>
+
+<p>Resultado:</p>
+<img src="../../../Assets/Imgs/billateralblur.PNG" width="500px" height="auto"/>
+
+
+<div class="section">
+    <h2>Conclusão e comentários finais:</h2>
+    <p class="subsection">Neste laboratorio estudamos 4 tipos de filtros: Averaging,Gaussian Blurring,Median Blurring,Bilateral Filtering.
+
+    cv.blur(): Aplica um filtro de média simples, onde cada pixel na imagem de saída é a média dos valores dos pixels em uma vizinhança definida. É um método rápido e eficaz para reduzir o ruído, mas pode causar uma perda de detalhes finos.
+    
+    cv.GaussianBlur(): Aplica um filtro de desfoque gaussiano, onde cada pixel na imagem de saída é calculado como uma média ponderada dos valores dos pixels em uma vizinhança definida. A aplicação da distribuição gaussiana permite um desfoque suave e sutil, preservando melhor os detalhes da imagem em comparação ao filtro de média simples.
+    
+    cv.medianBlur(): Aplica um filtro de desfoque mediano, onde cada pixel na imagem de saída é calculado como a mediana dos valores dos pixels em uma vizinhança definida. É especialmente eficaz na remoção de ruídos de sal e pimenta, preservando os detalhes da imagem.
+    
+    cv.bilateralFilter(): Aplica um filtro bilateral, que suaviza a imagem enquanto preserva as bordas. Leva em consideração tanto a diferença de intensidade de cor quanto as diferenças espaciais, garantindo que pixels semelhantes sejam preservados e pixels diferentes sejam suavizados.
+    
+    A escolha do filtro depende das características específicas da imagem, do tipo de ruído presente e do efeito desejado. Cada um desses filtros tem suas vantagens e aplicações adequadas, portanto, é importante experimentar diferentes técnicas e avaliar os resultados para obter o efeito desejado na imagem.
+    </p>
+</div>
+       
