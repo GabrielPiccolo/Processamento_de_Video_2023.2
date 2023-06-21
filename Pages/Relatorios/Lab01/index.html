@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 50px;
+      color: black;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 24px;
+      font-weight: bolder;
+      padding-bottom: 30px;
+    }
+
+    h2 {
+      color: #666;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 20px 0px 20px 0px;
+    }
+
+    p {
+      color: black;
+      font-size: 16px;
+    }
+
+    code {
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      background-color: #f5f5f5;
+      padding: 2px 4px;
+    }
+
+    pre {
+      background-color: #f5f5f5;
+      padding: 10px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Laboratório 1 – Captura de Imagem e Vídeo</h1>
+
+  <div class="section">
+    <h2>1. Introdução:</h2>
+    <p>Nessa laboratório utilizamos o ubuntu - linux, para instalar a biblioteca openCV, e conhecer os comandos para visualizar e gravar imagens e vídeos.</p>
+  </div>
+
+  <div class="section">
+    <h2>2. Fundamentos básicos:</h2>
+    <p>Saber trabalhar com html, python(bibliotecas numpy, openCV)<br>
+    Conhecimentos de Linux(Ubuntu)<br>
+    Conhecimento de lógica de programação no terminal<br>
+    Conhecer os comandos para visualizar e gravar imagens e vídeos</p>
+  </div>
+
+  <div class="section">
+    <h2>3. Materiais e Métodos:</h2>
+    <p>Usamos os arquivos dados no roteiro para seguir e resolver os problemas através do terminal no ubuntu. Para a gravação dos vídeos usamos a webcam fornecida no laboratorio, e utilizamos um código em openCV para capturar as imagens.</p>
+  </div>
+
+  <div class="section">
+    <h2>4. Resultados e Análises:</h2>
+
+    <div class="subsection">
+      <h3>Objetivos:</h3>
+      <ul>
+        <li>Iniciar os trabalhos no Ubuntu com o OpenCV</li>
+        <li>Conhecer os comandos para visualizar e gravar imagens e vídeos</li>
+        <li>Gravar um Vídeo e mostrá-lo no relatório</li>
+      </ul>
+    </div>
+
+    <div class="subsection">
+      <h3>4.1 Parte 1</h3>
+      <p>Preparamos o ambiente para instalar a biblioteca OpenCV</p>
+    </div>
+
+    <div class="subsection">
+        <h3>4.2 Parte 2</h3>
+        <p>(A) Leitura de imagem em arquivo:</p>
+        <pre>
+            <code>
+                import numpy as np
+                import cv2 as cv
+
+                img = cv.imread('messi5.jpg', 10)
+                cv.imshow('image', img)
+                k = cv.waitKey(0)
+
+                if k == 27:
+                    cv.destroyAllWindows()
+                elif k == ord('s'):
+                    cv.imwrite('messigray.png', img)
+                
+                cv.destroyAllWindows()
+            </code>
+        </pre>
+
+        <p>(B) Leitura, user message length exceeds maximum allowed message length.</p>
+        <p>Para mudar a quantidade de frames por segundo podemos alterar o denominador do trecho time.sleep(1/x), isso faz com que a quantidade de frames por segundo seja alterada, para ficar mais rapido devemos aumentar o valor de x e para o video ficar mais devagar diminuir o valor de x.</p>
+        <p>Exemplo de video lento:</p>
+        <pre>
+            <code>
+               
+                import time
+                import numpy as np
+                import cv2 as cv
+
+
+                cap = cv.VideoCapture('video.mp4')
+
+
+                while(cap.isOpened()):
+                ret, frame = cap.read()
+                
+                if ret==True:
+                # show the frame
+                cv.imshow('frame',frame)
+
+
+                #wait next frame by 40ms - 25fps
+                time.sleep(1/5.0)
+
+
+                if cv.waitKey(1) & 0xFF == ord('q'):
+                break
+                else:
+                break
+                
+                cap.release()
+                cv.destroyAllWindows()
+
+
+            </code>
+        </pre>
+
+        <p>Exemplo de video rápido:</p>
+
+        <pre>
+            <code>
+                import time
+                import numpy as np
+                import cv2 as cv
+
+
+                cap = cv.VideoCapture('video.mp4')
+
+
+                while(cap.isOpened()):
+                ret, frame = cap.read()
+                
+                if ret==True:
+                # show the frame
+                cv.imshow('frame',frame)
+
+
+                #wait next frame by 40ms - 25fps
+                time.sleep(1/100.0)
+
+
+                if cv.waitKey(1) & 0xFF == ord('q'):
+                break
+                else:
+                break
+                
+                cap.release()
+                cv.destroyAllWindows()
+            </code>
+        </pre>
+
+        <p>(C) Leitura de imagem de câmera:</p>
+        <p>O programa a seguir captura uma imagem da câmera e salva num arquivo “capturavideo.png” no momento em que for clicada a tecla ‘x’ noteclado.</p>
+
+        <pre>
+            <code>
+                import numpy as np
+                import cv2 as cv
+
+
+                cap = cv.VideoCapture(0)
+
+
+                if not cap.isOpened():
+                print("Cannot open camera")
+                exit()
+                
+                while True:
+                # Capture frame-by-frame
+                ret, frame = cap.read()
+                # if frame is read correctly ret is True
+                if not ret:
+                    print("Can't receive frame (stream end?). Exiting ...")
+                    break
+                
+                # Display the resulting frame
+                cv.imshow('frame', frame)
+                
+                if cv.waitKey(1) == ord('x'):
+                cv.imwrite('capturavideo.png', frame)
+                print("Imagem salva como capturavideo.png")
+                
+                if cv.waitKey(1) == ord('q'):
+                    break
+
+
+                # When everything done, release the capture
+                cap.release()
+                cv.destroyAllWindows()
+            </code>
+        </pre>
+
+        <p>(D) Gravação de vídeo da câmera:</p>
+
+        <pre>
+            <code>
+                import numpy as np
+                import cv2 as cv
+                import time as time
+                cap = cv.VideoCapture(0)
+
+
+                # Get current width of frame
+                width = cap.get(cv.CAP_PROP_FRAME_WIDTH)   # float
+                # Get current height of frame
+                height = cap.get(cv.CAP_PROP_FRAME_HEIGHT) # float
+                # Define Video Frame Rate in fps
+                fps = 20.0 # aumento do numero de frames/segundo
+
+
+                # Define the codec and create VideoWriter object
+                fourcc = cv.VideoWriter_fourcc(*'XVID')
+                out = cv.VideoWriter('saida.avi', fourcc, fps, (int(width),int(height)) )
+
+
+                while cap.isOpened():
+                ret, frame = cap.read()
+                if not ret:
+                    print("Can't receive frame (stream end?). Exiting ...")
+                    break
+                frame = cv.flip(frame, 1) #Gira imagem para ficar normal, 0 inverte.
+                time.sleep(1/25.0) #aumento da velocidade do video
+                # write the flipped frame
+                out.write(frame)
+                cv.imshow('frame', frame)
+                if cv.waitKey(1) == ord('q'):
+                    break
+
+
+                # Release everything if job is finished
+                cap.release()
+                out.release()
+                cv.destroyAllWindows()
+            </code>
+        </pre>
+    </div>
+
+    
+    <div class="subsection">
+        <h3>4.3 Obtenção de Fotos e Vídeos:</h3>
+        <p> a) 
+
+            Esse código é um exemplo de captura de vídeo usando a biblioteca OpenCV (cv2) em Python. Ele usa a webcam (dispositivo de captura de vídeo com ID 0) como entrada e exibe o vídeo em uma janela chamada "frame".
+            O código possui um loop while que continua capturando frames de vídeo até que a tecla "q" seja pressionada. Dentro do loop, ele verifica se um frame foi capturado corretamente e o exibe na janela. Ele também verifica se a tecla "x" foi pressionada e, nesse caso, salva o frame atual como uma imagem chamada "imagem1.png".
+            O código libera a captura de vídeo e fecha todas as janelas quando a tecla "q" é pressionada para sair do loop.
+            Em resumo, esse código permite que você visualize o vídeo da webcam em tempo real e salve um frame específico como uma imagem quando a tecla correspondente é pressionada.
+            Aqui usamos esse primeiro código duas vezes, uma para cada integrante do grupo.
+        </p>
+        <pre>
+            <code>
+                import numpy as np
+                import cv2 as cv
+
+                cap = cv.VideoCapture(0)
+
+                if not cap.isOpened():
+                print("Cannot open camera")
+                exit()
+                
+                while True:
+                # Capture frame-by-frame
+                ret, frame = cap.read()
+                # if frame is read correctly ret is True
+                if not ret:
+                    print("Can't receive frame (stream end?). Exiting ...")
+                    break
+                
+                # Display the resulting frame
+                cv.imshow('frame', frame)
+                
+                if cv.waitKey(1) == ord('x'):
+                    cv.imwrite('imagem1.png', frame)
+                    print("Imagem salva como imagem1.png")
+                
+                if cv.waitKey(1) == ord('q'):
+                    break
+
+                # When everything done, release the capture
+                cap.release()
+                cv.destroyAllWindows()
+
+            </code>
+        </pre>
+
+        <p>
+            O código a seguir em Python utiliza a biblioteca OpenCV (cv2) para carregar duas imagens (imagem1.jpg e imagem2.jpg) e criar uma nova imagem que combina as duas lado a lado em uma única composição.
+
+            Carrega as duas imagens usando a função cv2.imread(). A primeira imagem é atribuída à variável imagem1 e a segunda à variável imagem2.
+            Verifica se as imagens foram carregadas corretamente. Se alguma das imagens for None, imprime uma mensagem de erro.
+            Obtém as dimensões das imagens usando o atributo shape. A altura é definida como o valor máximo entre as alturas das duas imagens. A largura total é calculada somando as larguras das duas imagens.
+            Cria uma nova imagem chamada composição usando a função np.zeros(). Essa imagem tem as dimensões da altura máxima e largura total, e utiliza o dtype np.uint8 para representar os valores dos pixels.
+            Copia a imagem1 para a parte esquerda da composição. Usando a notação de fatiamento (slicing), a região correspondente à imagem1 é atribuída à parte esquerda da composição.
+            Copia a imagem2 para a parte direita da composição. Novamente usando a notação de fatiamento, a região correspondente à imagem2 é atribuída à parte direita da composição, começando na coluna após a largura da imagem1.
+            Exibe a imagem resultante usando a função cv2.imshow(). O título da janela é definido como 'Composição'. O código cv2.waitKey(0) aguarda até que uma tecla seja pressionada e cv2.destroyAllWindows() fecha todas as janelas abertas.
+
+        </p>
+
+        <pre>
+            <code>
+                import cv2
+                import numpy as np
+
+                # Carrega as duas imagens
+                imagem1 = cv2.imread('imagem1.jpg')
+                imagem2 = cv2.imread('imagem2.jpg')
+
+                # Verifica se as imagens foram carregadas corretamente
+                if imagem1 is None or imagem2 is None:
+                    print("Não foi possível carregar as imagens.")
+                else:
+                    # Obtém as dimensões das imagens
+                    altura = max(imagem1.shape[0], imagem2.shape[0])
+                    largura_total = imagem1.shape[1] + imagem2.shape[1]
+
+                    # Cria uma nova imagem com as dimensões adequadas para a composição
+                    composicao = np.zeros((altura, largura_total, 3), dtype=np.uint8)
+
+                    # Copia a imagem1 para a parte esquerda da composição
+                    composicao[:imagem1.shape[0], :imagem1.shape[1]] = imagem1
+
+                    # Copia a imagem2 para a parte direita da composição
+                    composicao[:imagem2.shape[0], imagem1.shape[1]:] = imagem2
+
+                    # Exibe a imagem resultante
+                    cv2.imshow('Composição', composicao)
+                    cv2.waitKey(0)
+                    cv2.destroyAllWindows()
+            </code>
+        </pre>
+
+        <p>Resultado:</p>
+        <img src="../../../Assets/Imgs/joined_membros.PNG" width="500px" height="auto"/>
+
+        <p>
+            b)
+
+            Usando o mesmo código da letra ‘’(a)’’, porem mudando o nome da imagem de acordo com o avatar escolhido.
+
+            Captura duas imagens de avatares e compoẽ(deve-se trocar a extensão de acordo com a imagem escolhida, por exemplo as imagens que escolhemos tinham extensao .jpeg e .png):
+
+            Aqui escolhemos os avatares:
+            -goku
+            -naruto
+        </p>
+
+        <pre>
+            <code>
+                import cv2
+                import numpy as np
+
+
+                # Carrega as duas imagens
+                imagem1 = cv2.imread('avatar1.jpeg')
+                imagem2 = cv2.imread('avatar2.png')
+
+
+                # Verifica se as imagens foram carregadas corretamente
+                if imagem1 is None or imagem2 is None:
+                    print("Não foi possível carregar as imagens.")
+                else:
+                    # Obtém as dimensões das imagens
+                    altura = max(imagem1.shape[0], imagem2.shape[0])
+                    largura_total = imagem1.shape[1] + imagem2.shape[1]
+
+                    # Cria uma nova imagem com as dimensões adequadas para a composição
+                    composicao = np.zeros((altura, largura_total, 3), dtype=np.uint8)
+
+                    # Copia a imagem1 para a parte esquerda da composição
+                    composicao[:imagem1.shape[0], :imagem1.shape[1]] = imagem1
+
+
+                    # Copia a imagem2 para a parte direita da composição
+                    composicao[:imagem2.shape[0], imagem1.shape[1]:] = imagem2
+
+
+                    # Exibe a imagem resultante
+                    cv2.imshow('Composição', composicao)
+                    cv2.waitKey(0)
+                    cv2.destroyAllWindows()
+            </code>
+        </pre>
+
+        <p>Resultado:</p>
+        <img src="../../../Assets/Imgs/joined_avatares.PNG" width="500px" height="auto"/>
+
+        <p>
+            c)<br/>
+                i-)<br/>
+
+                Importa as bibliotecas necessárias: numpy (np) para manipulação de arrays, cv2 para processamento de imagens e vídeos, e time para pausar a execução do programa.
+                Inicializa a captura de vídeo utilizando a função cv.VideoCapture(). O argumento 0 indica que a captura será realizada da primeira câmera disponível. Se houver mais de uma câmera, pode ser necessário alterar esse valor.
+
+                Obtém a largura e altura atual do frame usando as funções cap.get(cv.CAP_PROP_FRAME_WIDTH) e cap.get(cv.CAP_PROP_FRAME_HEIGHT), respectivamente.
+
+                <strong>
+                    Define a taxa de quadros por segundo (FPS) desejada para o vídeo resultante na variável fps. Neste caso, foi definido como 20.0 FPS.
+                </strong>
+
+                Define o codec de compressão para o vídeo usando a função cv.VideoWriter_fourcc(). Neste exemplo, o codec 'XVID' é utilizado. Em seguida, cria um objeto VideoWriter chamado out, que receberá os frames do vídeo.
+
+                Inicia um loop while para processar cada frame do vídeo capturado.
+                Utiliza a função cap.read() para ler o próximo frame do vídeo. A variável ret indica se o frame foi lido com sucesso, e a variável frame contém o frame lido.
+
+                Verifica se o frame foi lido corretamente. Se não for, significa que o final do stream de vídeo foi alcançado e o loop é interrompido.
+                Realiza uma transformação no frame utilizando a função cv.flip(). Neste caso, a imagem é girada horizontalmente (valor 1) para corrigir a orientação.
+                
+                <strong>
+                    Pausa a execução do programa usando a função time.sleep(). Neste exemplo, é utilizado 1/25.0 segundos (aproximadamente 0.04 segundos) para aumentar a velocidade do vídeo. Você pode ajustar esse valor para alterar a velocidade do vídeo resultante.
+                </strong>
+
+                Grava o frame transformado no objeto VideoWriter utilizando a função out.write().
+                Exibe o frame atual utilizando a função cv.imshow(). A janela exibida é denominada 'frame'. O comando cv.waitKey(1) aguarda por 1 milissegundo e verifica se a tecla 'q' foi pressionada para interromper a execução do programa.
+
+                Após o término do loop, libera os recursos utilizados chamando as funções cap.release() para liberar a câmera e out.release() para fechar o arquivo de vídeo.
+                Fecha todas as janelas abertas utilizando a função cv.destroyAllWindows().
+
+                <strong>
+                    Usando esse código com o comando time.sleep(1/x), e  diminuindo o x,para deixar o vídeo mais lento. Além disso, podemos diminuir a taxa de fps para também diminuir a velocidade.
+
+                    Os passos destacados são onde influencia na velocidade de reprodução do vídeo.
+                </strong>
+        </p>
+
+        <pre>
+            <code>
+                import numpy as np
+                import cv2 as cv
+                import time as time
+                cap = cv.VideoCapture(0)
+
+
+                # Get current width of frame
+                width = cap.get(cv.CAP_PROP_FRAME_WIDTH)   # float
+                # Get current height of frame
+                height = cap.get(cv.CAP_PROP_FRAME_HEIGHT) # float
+                # Define Video Frame Rate in fps
+                fps = 20.0 # aumento do numero de frames/segundo
+
+
+                # Define the codec and create VideoWriter object
+                fourcc = cv.VideoWriter_fourcc(*'XVID')
+                out = cv.VideoWriter('saida.avi', fourcc, fps, (int(width),int(height)) )
+
+
+                while cap.isOpened():
+                ret, frame = cap.read()
+                if not ret:
+                    print("Can't receive frame (stream end?). Exiting ...")
+                    break
+                frame = cv.flip(frame, 1) #Gira imagem para ficar normal, 0 inverte.
+                time.sleep(1/25.0) #aumento da velocidade do video
+                # write the flipped frame
+                out.write(frame)
+                cv.imshow('frame', frame)
+                if cv.waitKey(1) == ord('q'):
+                    break
+
+
+                # Release everything if job is finished
+                cap.release()
+                out.release()
+                cv.destroyAllWindows()
+
+            </code>
+        </pre>
+
+        <p>
+            ii-) <br>
+
+            Aqui usamos o mesmo código do passo anterior, porém aumentamos o x da funçao time.sleep, e também aumentamos o fps
+
+            Usando esse código com o comando time.sleep(1/x), e  aumentando o x, para deixar o vídeo mais rápido. Além disso, podemos aumentar a taxa de fps para também aumentar a velocidade.
+
+        </p>
+
+        <pre>
+            <code>
+                import numpy as np
+                import cv2 as cv
+                import time as time
+                cap = cv.VideoCapture(0)
+
+
+                # Get current width of frame
+                width = cap.get(cv.CAP_PROP_FRAME_WIDTH)   # float
+                # Get current height of frame
+                height = cap.get(cv.CAP_PROP_FRAME_HEIGHT) # float
+                # Define Video Frame Rate in fps
+                fps = 60.0 # aumento do numero de frames/segundo
+
+
+                # Define the codec and create VideoWriter object
+                fourcc = cv.VideoWriter_fourcc(*'XVID')
+                out = cv.VideoWriter('saida.avi', fourcc, fps, (int(width),int(height)) )
+
+
+                while cap.isOpened():
+                ret, frame = cap.read()
+                if not ret:
+                    print("Can't receive frame (stream end?). Exiting ...")
+                    break
+                frame = cv.flip(frame, 1) #Gira imagem para ficar normal, 0 inverte.
+                time.sleep(1/100.0) #aumento da velocidade do video
+                # write the flipped frame
+                out.write(frame)
+                cv.imshow('frame', frame)
+                if cv.waitKey(1) == ord('q'):
+                    break
+
+
+                # Release everything if job is finished
+                cap.release()
+                out.release()
+                cv.destroyAllWindows()
+            </code>
+        </pre>
+
+    </div>
+
+    <div class="section">
+        <h2>5. Conclusão:</h2>
+
+        <p>
+            Com esse laboratório, podemos concluir que aprendemos sobre como manusear os comandos para visualizar e gravar imagens e videos  usando a biblioteca OpenCV do python no Ubuntu. Aprendemos a compor imagens, e fazer sua captura através de uma webcam.
+
+            Além disso, também aprendemos a como tratar videos, para deixá-los mais rápidos ou lentos, também a fazer a captura de um vídeo através da webcam. 
+        </p>
+    </div>
+</div>
+</body>
+

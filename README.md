@@ -1,2 +1,2 @@
-# Processamento_de_Video_2023.2
-Projetos sobre a materia processamento de video na UFABC
+# ProcessamentoDeVideo_2023
+Repositorio do grupo de Processamento de Video - 2023.2
