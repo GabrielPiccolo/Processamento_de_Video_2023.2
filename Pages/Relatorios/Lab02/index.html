@@ -75,6 +75,8 @@
   <div class="section">
     <h2>4. Resultados e Análises:</h2>
 
+    <h3>1) Realize cada um dos experimentos de filtragem do tutorial, utilizando suas próprias imagens obtidas no Lab1 - parte 3.
+      Salve os arquivos de imagem filtrada através do próprio programa.</h3>
     <div class="subsection">
       <h3>2D Convolution ( Image Filtering )
     
@@ -121,7 +123,7 @@
             </code>
         </pre>
         <p>Resultado:</p>
-        <img src="../../../Assets/Imgs/2d convolutionnormal.png" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/2d convolution.PNG" width="500px" height="auto"/>
 
         <p>Podemos notar que o codigo traz a foto com filtro, porem ela esta azul ao O OpenCV normalmente assume que as imagens estão no formato BGR (azul, verde, vermelho) ao ler arquivos .jpeg. No entanto, algumas câmeras e programas de edição podem utilizar espaços de cor diferentes, como RGB (vermelho, verde, azul).
         </p>
@@ -155,7 +157,7 @@
         </p>
 
         <p>Resultado:</p>
-        <img src="../../../Assets/Imgs/2d convolutionnormal.png" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/2d convolutionnormal.PNG" width="500px" height="auto"/>
 
         <div class="subsection">
             <h3>Image Blurring (Image Smoothing)
@@ -216,7 +218,7 @@
           </code></pre>
 
           <p>Resultado:</p>
-        <img src="../../../Assets/Imgs/Averaging.png" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/Averaging.PNG" width="500px" height="auto"/>
 
 
         <p>2. Gaussian Blurring</p>
@@ -254,7 +256,7 @@
   </code></pre>
 
   <p>Resultado:</p>
-<img src="../../../Assets/Imgs/gaublur.png" width="500px" height="auto"/>
+<img src="../../../Assets/Imgs/gaublur.PNG" width="500px" height="auto"/>
 
 <p>3. Median Blurring
 </p>
@@ -333,6 +335,268 @@
 <p>Resultado:</p>
 <img src="../../../Assets/Imgs/billateralblur.PNG" width="500px" height="auto"/>
 
+<H3>2) Com o programa que faz a leitura da webcam, realize cada um dos experimentos de filtragem do tutorial, na imagem de entrada.
+  Salve os arquivos de imagem filtrada gerados através do próprio programa.</H3>
+
+  <div class="subsection">
+    <h3>Image Blurring (Image Smoothing) - Capturada da webcam
+      <h2>1. Averaging</h2>
+  
+  <div class="subsection">
+      <p>Aqui usamos o codigo com o mesmo intuito do anteriror, porem agora com um passo a mais de abrir a webcam e ao apertar 'x', salvamos uma foto.png, ai entao usamos o mesmo codigo anterior para aplicar o filtro dessa etapa.</p>
+      <pre><code>
+        import cv2
+        import matplotlib.pyplot as plt
+        
+        def capturar_foto():
+            # Inicializar a webcam
+            cap = cv2.VideoCapture(0)
+            
+            while True:
+                # Ler o frame da webcam
+                ret, frame = cap.read()
+                
+                # Exibir o frame
+                cv2.imshow("Webcam", frame)
+                
+                # Esperar pela tecla 'x' ser pressionada
+                if cv2.waitKey(1) & 0xFF == ord('x'):
+                    # Salvar o frame como imagem
+                    cv2.imwrite("foto.png", frame)
+                    
+                    # Aplicar o efeito de desfoque
+                    blur = cv2.blur(frame, (5, 5))
+                    # Salvar a imagem com blur
+                    cv2.imwrite("foto_blur.png", blur)
+                    
+                    print("Fotos capturadas!")
+                    break
+            
+            # Liberar a webcam e fechar a janela
+            cap.release()
+            cv2.destroyAllWindows()
+        
+        # Chamar a função para capturar a foto
+        capturar_foto()
+        
+        # Carregar a imagem original
+        img_original = cv2.imread('foto.png')
+        assert img_original is not None, "A imagem original não pôde ser lida. Verifique se ela existe."
+        
+        # Carregar a imagem com blur
+        img_blur = cv2.imread('foto_blur.png')
+        assert img_blur is not None, "A imagem com blur não pôde ser lida. Verifique se ela existe."
+        
+        # Converter as imagens para RGB
+        img_original_rgb = cv2.cvtColor(img_original, cv2.COLOR_BGR2RGB)
+        img_blur_rgb = cv2.cvtColor(img_blur, cv2.COLOR_BGR2RGB)
+        
+        # Exibir as imagens
+        plt.subplot(121), plt.imshow(img_original_rgb), plt.title('Original')
+        plt.xticks([]), plt.yticks([])
+        plt.subplot(122), plt.imshow(img_blur_rgb), plt.title('Blurred')
+        plt.xticks([]), plt.yticks([])
+        plt.show()
+      </code></pre>
+
+
+      <p>Resultado:</p>
+      <img src="../../../Assets/Imgs/capweb1.JPEG" width="500px" height="auto"/>
+
+      <div class="subsection">
+          <h2>2. Gaussian Blurring</h2>
+      
+      <div class="subsection">
+          <p>Aqui usamos o codigo com o mesmo intuito do anteriror, porem agora com o Gausssian blurring.</p>
+          <pre><code>
+import cv2
+import matplotlib.pyplot as plt
+
+def capturar_foto():
+    # Inicializar a webcam
+    cap = cv2.VideoCapture(0)
+    
+    while True:
+        # Ler o frame da webcam
+        ret, frame = cap.read()
+        
+        # Exibir o frame
+        cv2.imshow("Webcam", frame)
+        
+        # Esperar pela tecla 'x' ser pressionada
+        if cv2.waitKey(1) & 0xFF == ord('x'):
+            # Salvar o frame como imagem
+            cv2.imwrite("foto.png", frame)
+            
+            # Aplicar o efeito de desfoque mediano
+            blur = cv2.medianBlur(frame, 5)
+            # Salvar a imagem com blur
+            cv2.imwrite("foto_blur.png", blur)
+            
+            print("Fotos capturadas!")
+            break
+    
+    # Liberar a webcam e fechar a janela
+    cap.release()
+    cv2.destroyAllWindows()
+
+# Chamar a função para capturar a foto
+capturar_foto()
+
+# Carregar a imagem original
+img_original = cv2.imread('foto.png')
+assert img_original is not None, "A imagem original não pôde ser lida. Verifique se ela existe."
+
+# Carregar a imagem com blur
+img_blur = cv2.imread('foto_blur.png')
+assert img_blur is not None, "A imagem com blur não pôde ser lida. Verifique se ela existe."
+
+# Converter as imagens para RGB
+img_original_rgb = cv2.cvtColor(img_original, cv2.COLOR_BGR2RGB)
+img_blur_rgb = cv2.cvtColor(img_blur, cv2.COLOR_BGR2RGB)
+
+# Exibir as imagens
+plt.subplot(121), plt.imshow(img_original_rgb), plt.title('Original')
+plt.xticks([]), plt.yticks([])
+plt.subplot(122), plt.imshow(img_blur_rgb), plt.title('Blurred')
+plt.xticks([]), plt.yticks([])
+plt.show()
+          
+          </code></pre>
+    
+    
+          <p>Resultado:</p>
+          <img src="../../../Assets/Imgs/capweb2.JPEG" width="500px" height="auto"/>
+
+          <div class="subsection">
+            <h2>3. Median Blurring</h2>
+        
+        <div class="subsection">
+            <p>Aqui usamos o codigo com o mesmo intuito do anteriror, porem agora com o Median Blurring.</p>
+            <pre><code>
+import cv2
+import matplotlib.pyplot as plt
+
+def capturar_foto():
+    # Inicializar a webcam
+    cap = cv2.VideoCapture(0)
+    
+    while True:
+        # Ler o frame da webcam
+        ret, frame = cap.read()
+        
+        # Exibir o frame
+        cv2.imshow("Webcam", frame)
+        
+        # Esperar pela tecla 'x' ser pressionada
+        if cv2.waitKey(1) & 0xFF == ord('x'):
+            # Salvar o frame como imagem
+            cv2.imwrite("foto.png", frame)
+            
+            # Aplicar o efeito de desfoque bilateral
+            blur = cv2.bilateralFilter(frame, 9, 75, 75)
+            # Salvar a imagem com blur
+            cv2.imwrite("foto_blur.png", blur)
+            
+            print("Fotos capturadas!")
+            break
+    
+    # Liberar a webcam e fechar a janela
+    cap.release()
+    cv2.destroyAllWindows()
+
+# Chamar a função para capturar a foto
+capturar_foto()
+
+# Carregar a imagem original
+img_original = cv2.imread('foto.png')
+assert img_original is not None, "A imagem original não pôde ser lida. Verifique se ela existe."
+
+# Carregar a imagem com blur
+img_blur = cv2.imread('foto_blur.png')
+assert img_blur is not None, "A imagem com blur não pôde ser lida. Verifique se ela existe."
+
+# Converter as imagens para RGB
+img_original_rgb = cv2.cvtColor(img_original, cv2.COLOR_BGR2RGB)
+img_blur_rgb = cv2.cvtColor(img_blur, cv2.COLOR_BGR2RGB)
+
+# Exibir as imagens
+plt.subplot(121), plt.imshow(img_original_rgb), plt.title('Original')
+plt.xticks([]), plt.yticks([])
+plt.subplot(122), plt.imshow(img_blur_rgb), plt.title('Blurred')
+plt.xticks([]), plt.yticks([])
+plt.show()
+              
+            </code></pre>
+      
+      
+            <p>Resultado:</p>
+            <img src="../../../Assets/Imgs/capweb3.JPEG" width="500px" height="auto"/>
+
+            <div class="subsection">
+              <h2>4. Bilateral Filtering</h2>
+          
+          <div class="subsection">
+              <p>Aqui usamos o codigo com o mesmo intuito do anteriror, porem agora com o Bilateral Filtering.</p>
+              <pre><code>
+import cv2
+import matplotlib.pyplot as plt
+
+def capturar_foto():
+    # Inicializar a webcam
+    cap = cv2.VideoCapture(0)
+    
+    while True:
+        # Ler o frame da webcam
+        ret, frame = cap.read()
+        
+        # Exibir o frame
+        cv2.imshow("Webcam", frame)
+        
+        # Esperar pela tecla 'x' ser pressionada
+        if cv2.waitKey(1) & 0xFF == ord('x'):
+            # Salvar o frame como imagem
+            cv2.imwrite("foto.png", frame)
+            
+            # Aplicar o efeito de desfoque mediano
+            blur = cv2.medianBlur(frame, 5)
+            # Salvar a imagem com blur
+            cv2.imwrite("foto_blur.png", blur)
+            
+            print("Fotos capturadas!")
+            break
+    
+    # Liberar a webcam e fechar a janela
+    cap.release()
+    cv2.destroyAllWindows()
+
+# Chamar a função para capturar a foto
+capturar_foto()
+
+# Carregar a imagem original
+img_original = cv2.imread('foto.png')
+assert img_original is not None, "A imagem original não pôde ser lida. Verifique se ela existe."
+
+# Carregar a imagem com blur
+img_blur = cv2.imread('foto_blur.png')
+assert img_blur is not None, "A imagem com blur não pôde ser lida. Verifique se ela existe."
+
+# Converter as imagens para RGB
+img_original_rgb = cv2.cvtColor(img_original, cv2.COLOR_BGR2RGB)
+img_blur_rgb = cv2.cvtColor(img_blur, cv2.COLOR_BGR2RGB)
+
+# Exibir as imagens
+plt.subplot(121), plt.imshow(img_original_rgb), plt.title('Original')
+plt.xticks([]), plt.yticks([])
+plt.subplot(122), plt.imshow(img_blur_rgb), plt.title('Blurred')
+plt.xticks([]), plt.yticks([])
+plt.show()
+          
+              </code></pre>
+        
+        
+              <p>Resultado:</p>
+              <img src="../../../Assets/Imgs/capweb1.JPEG" width="500px" height="auto"/>
 
 <div class="section">
     <h2>Conclusão e comentários finais:</h2>
@@ -350,3 +614,4 @@
     </p>
 </div>
        
+  
