@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 50px;
+      color: black;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 24px;
+      font-weight: bolder;
+      padding-bottom: 30px;
+    }
+
+    h2 {
+      color: #666;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 20px 0px 20px 0px;
+    }
+
+    p {
+      color: black;
+      font-size: 16px;
+    }
+
+    code {
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      background-color: #f5f5f5;
+      padding: 2px 4px;
+    }
+
+    pre {
+      background-color: #f5f5f5;
+      padding: 10px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Laboratório 3 – Espaço de Cores</h1>
+
+  <div class="section">
+    <h2>1. Introdução:</h2>
+    <p>Nessa laboratório aprendemos sobre as cores, utilizando a biblioteca openCV, e alguns comandas como cv.cvtColor(), diminuir e aumentar uma cor, e fazer outras mudanças manuseando as cores.</p>
+  </div>
+
+  <div class="section">
+    <h2>2. Fundamentos básicos:</h2>
+    <p>Saber trabalhar com html, python(bibliotecas numpy, openCV)<br>
+    Conhecimentos de Linux(Ubuntu)<br>
+    Conhecimento de lógica de programação no terminal<br>
+    Conhecer os comandos para visualizar e gravar imagens e vídeos
+    Utilizar comandos para alterar cores<br>
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>3. Materiais e Métodos:</h2>
+    <p>Usamos os arquivos dados no roteiro para seguir e resolver os problemas através do terminal no ubuntu. Para a gravação dos vídeos usamos a webcam fornecida no laboratorio, e utilizamos um código em openCV para capturar as imagens. Tambem utilizamos comandos em pyton para alterar as cores</p>
+  </div>
+
+  <div class="section">
+    <h2>4. Resultados e Análises:</h2>
+
+    <div class="subsection">
+      <h3>Objetivos:</h3>
+      <ul>
+        <li>Iniciar os trabalhos no Ubuntu com o OpenCV</li>
+        <li>Conhecer os comandos para visualizar e gravar imagens e vídeos</li>
+        <p> </p>
+        <li>(1) Estude a teoria de conversão de cores.</li>
+        <p> </p>
+        <li>(2) Estude este programa de mudança do espaço RGB para HSV, e execute o programa com a webcam, e um objeto colorido.</li>
+        <p>a) Modifique este programa para salvar a imagem da webcam ao toque de uma tecla.</p>
+        <p>O código permite que você visualize em tempo real as áreas da imagem que correspondem à cor azul, enquanto combina o frame original, a máscara binária e a imagem resultante em uma única imagem para exibição.</p>
+        <p>Converte o frame da imagem do espaço de cores BGR para HSV.
+          Define a faixa de cores azul na imagem HSV utilizando os valores de cor inferior (lower_blue) e superior (upper_blue).
+          Cria uma máscara binária (mask) que filtra apenas os pixels azuis na imagem HSV.
+          Aplica uma operação bitwise-AND entre a máscara e a imagem original para obter a imagem resultante (res) com apenas os pixels azuis preservados.
+          Converte a máscara binária de 2D para uma imagem colorida 3D (mask_3d).
+          Combina horizontalmente as três imagens: frame, mask_3d e res em uma única imagem (combined_image).
+          Exibe a imagem combinada em uma janela chamada "Combined Image".
+          Aguarda uma tecla ser pressionada.
+          Se a tecla 's' for pressionada, salva a imagem combinada como "combined_image.jpg".
+          Se a tecla 'Esc' for pressionada, o loop é interrompido e o programa é encerrado.
+          Libera o objeto de captura de vídeo e fecha todas as janelas.</p>
+        <p>Codigo:</p>
+        <pre><code>
+import cv2 as cv
+import numpy as np
+
+cap = cv.VideoCapture(0)
+
+while True:
+    # Take each frame
+    ret, frame = cap.read()
+
+    # Convert BGR to HSV
+    hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+
+    # Define range of blue color in HSV
+    lower_blue = np.array([110, 50, 50])
+    upper_blue = np.array([130, 255, 255])
+
+    # Threshold the HSV image to get only blue colors
+    mask = cv.inRange(hsv, lower_blue, upper_blue)
+
+    # Bitwise-AND mask and original image
+    res = cv.bitwise_and(frame, frame, mask=mask)
+
+    # Convert the 2D mask to 3D
+    mask_3d = cv.cvtColor(mask, cv.COLOR_GRAY2BGR)
+
+    # Combine the three images side by side
+    combined_image = np.hstack((frame, mask_3d, res))
+
+    # Display the combined image
+    cv.imshow('Combined Image', combined_image)
+
+    # Wait for key press
+    key = cv.waitKey(1)
+
+    # Check if the 's' key is pressed to save the image
+    if key == ord('s'):
+        cv.imwrite('combined_image.jpg', combined_image)
+        print("Image saved!")
+
+    # Check if the 'Esc' key is pressed to exit
+    if key == 27:
+        break
+
+# Release the video capture object and close all windows
+cap.release()
+cv.destroyAllWindows()
+        </code></pre>
+        <p>Resultado:</p>
+
+        <p>(b) Modifique novamente, para incluir uma filtragem - da aula anterior, na imagem de entrada da webcam.</p>
+        <p>O codigo a seguir faz a mesma coisa do anterior, porem adiciona um gaussianblur: blur = cv.GaussianBlur(img,(5,5),0)</p>
+        <p>Codigo:</p>
+        <pre><code>
+          import cv2 as cv
+          import numpy as np
+          
+          cap = cv.VideoCapture(0)
+          
+          while True:
+              # Take each frame
+              ret, frame = cap.read()
+          
+              # Convert BGR to HSV
+              hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+          
+              # Define range of blue color in HSV
+              lower_blue = np.array([110, 50, 50])
+              upper_blue = np.array([130, 255, 255])
+          
+              # Threshold the HSV image to get only blue colors
+              mask = cv.inRange(hsv, lower_blue, upper_blue)
+          
+              # Bitwise-AND mask and original image
+              res = cv.bitwise_and(frame, frame, mask=mask)
+          
+              # Convert the 2D mask to 3D
+              mask_3d = cv.cvtColor(mask, cv.COLOR_GRAY2BGR)
+          
+              # Combine the three images side by side
+              combined_image = np.hstack((frame, mask_3d, res))
+          
+              # Apply Gaussian blur to the combined image
+              combined_image_blur = cv.GaussianBlur(combined_image, (5, 5), 0)
+          
+              # Display the combined image with blur
+              cv.imshow('Combined Image with Blur', combined_image_blur)
+          
+              # Wait for key press
+              key = cv.waitKey(1)
+          
+              # Check if the 's' key is pressed to save the image
+              if key == ord('s'):
+                  cv.imwrite('combined_image_blur.jpg', combined_image_blur)
+                  print("Image saved!")
+          
+              # Check if the 'Esc' key is pressed to exit
+              if key == 27:
+                  break
+          
+          # Release the video capture object and close all windows
+          cap.release()
+          cv.destroyAllWindows()
+        </code></pre>
+        <p>Resultado:</p>
+
+        <p>(c) Adicionalmente modifique o programa para salvar um video dos experimentos.</p>
+        <p>Neste código, um objeto VideoWriter é criado usando o codec de vídeo 'XVID', uma taxa de frames de 20.0 e o tamanho dos frames definido como (640, 480). Você pode ajustar esses parâmetros conforme necessário. O quadro atual capturado pela webcam é gravado no arquivo de vídeo usando o método write() do objeto VideoWriter.</p>
+        <p>Codigo:</p>
+        <pre><code>
+import cv2 as cv
+import numpy as np
+
+cap = cv.VideoCapture(0)
+
+# Define o codec de vídeo e outras configurações
+fourcc = cv.VideoWriter_fourcc(*'XVID')
+out = cv.VideoWriter('output.avi', fourcc, 20.0, (640, 480))
+
+while True:
+    # Take each frame
+    ret, frame = cap.read()
+
+    # Convert BGR to HSV
+    hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+
+    # Define range of blue color in HSV
+    lower_blue = np.array([110, 50, 50])
+    upper_blue = np.array([130, 255, 255])
+
+    # Threshold the HSV image to get only blue colors
+    mask = cv.inRange(hsv, lower_blue, upper_blue)
+
+    # Bitwise-AND mask and original image
+    res = cv.bitwise_and(frame, frame, mask=mask)
+
+    # Convert the 2D mask to 3D
+    mask_3d = cv.cvtColor(mask, cv.COLOR_GRAY2BGR)
+
+    # Combine the three images side by side
+    combined_image = np.hstack((frame, mask_3d, res))
+
+    # Display the combined image
+    cv.imshow('Combined Image', combined_image)
+
+    # Write the frame to the video file
+    out.write(frame)
+
+    # Wait for key press
+    key = cv.waitKey(1)
+
+    # Check if the 'Esc' key is pressed to exit
+    if key == 27:
+        break
+
+# Release the video capture object, close the video writer, and close all windows
+cap.release()
+out.release()
+cv.destroyAllWindows()
+        </code></pre>
+        <p>Resultado:</p>
+
+
+        <li>3) Exercício em equipe:</li>
+        <p>Tente encontrar uma maneira de extrair mais de um objeto colorido, por exemplo, extraia objetos vermelhos, azuis e verdes simultaneamente.</p>
+        <pre><code>
+import cv2 as cv
+import numpy as np
+
+cap = cv.VideoCapture(0)
+
+while True:
+    # Take each frame
+    ret, frame = cap.read()
+
+    # Convert BGR to HSV
+    hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+
+    # Define range of colors in HSV
+    lower_red = np.array([0, 50, 50])
+    upper_red = np.array([10, 255, 255])
+
+    lower_blue = np.array([110, 50, 50])
+    upper_blue = np.array([130, 255, 255])
+
+    lower_green = np.array([50, 50, 50])
+    upper_green = np.array([70, 255, 255])
+
+    # Threshold the HSV image to get masks for each color
+    mask_red = cv.inRange(hsv, lower_red, upper_red)
+    mask_blue = cv.inRange(hsv, lower_blue, upper_blue)
+    mask_green = cv.inRange(hsv, lower_green, upper_green)
+
+    # Bitwise-AND masks and original image
+    res_red = cv.bitwise_and(frame, frame, mask=mask_red)
+    res_blue = cv.bitwise_and(frame, frame, mask=mask_blue)
+    res_green = cv.bitwise_and(frame, frame, mask=mask_green)
+
+    # Combine the three images side by side
+    combined_image = np.hstack((frame, res_red, res_blue, res_green))
+
+    # Display the combined image
+    cv.imshow('Combined Image', combined_image)
+
+    # Wait for key press
+    key = cv.waitKey(1)
+
+    # Check if the 'Esc' key is pressed to exit
+    if key == 27:
+        break
+
+# Release the video capture object and close all windows
+cap.release()
+cv.destroyAllWindows()
+cv.destroyAllWindows()
+        </code></pre>
+      </ul>
+    </div>
