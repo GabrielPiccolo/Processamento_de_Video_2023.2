@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 50px;
+      color: black;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 24px;
+      font-weight: bolder;
+      padding-bottom: 30px;
+    }
+    
+    .display-grid-buttons{
+        gap: 30px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        padding: 40px;
+    }
+
+    .btn-connection{
+        width: 100%;
+        height: 50px;
+        border-radius: 7px;
+        background-color: rgb(0, 22, 88);
+        border: 1px solid white; 
+        text-align: center;
+        color: white;
+    }
+
+    .btn-connection:hover{
+        transform: scale(1.1);
+        background-color: cadetblue;
+    }
+
+    .btn-connection>span{
+        line-height: 50px;
+    }
+
+    h2 {
+      color: #666;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 20px 0px 20px 0px;
+    }
+
+    p {
+      color: black;
+      font-size: 16px;
+      text-align: justify;
+    }
+    
+    .center{
+        display: flex; flex-direction: row; justify-content: center; width: 100%;
+        gap: 30px;
+        padding: 20px 0px 20px 0px;
+    }
+
+    code {
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      background-color: #f5f5f5;
+      padding: 2px 4px;
+    }
+
+    pre {
+      background-color: #f5f5f5;
+      padding: 10px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+    <h1>TRABALHO - PROCESSAMENTO DE VÍDEO 2023.1</h1>
+
+    <div class="section">
+        <h2>Parte 1: Contexto e Cenário de Aplicação:</h2>
+
+        <br/>
+        <p><b>TEMA:</b> Analise condicional do uso de EPI's por identificação de cores da roupa.</p>
+        <br/>
+        <p>Os Equipamentos de Proteção Individual (EPIs) desempenham um papel crucial na garantia da segurança e proteção dos trabalhadores em diversos ambientes laborais. Esses equipamentos são projetados para reduzir os riscos e minimizar a exposição a perigos que podem causar danos à saúde e à integridade física dos funcionários.</p>
+        <p>A importância dos EPIs reside no fato de que eles constituem uma barreira de proteção entre os trabalhadores e os perigos presentes no ambiente de trabalho. Eles podem incluir capacetes, óculos de proteção, luvas, calçados de segurança, protetores auriculares, máscaras respiratórias, entre outros dispositivos. Cada EPI é selecionado de acordo com os riscos específicos de cada atividade, proporcionando proteção adequada contra ameaças como quedas, impactos, substâncias químicas, ruídos, partículas suspensas no ar, entre outros.</p>
+        <p>Dada a importância e relevância do tema, a meta principal desse trabalho é a <b>criação de um sistema de vídeo que detecta a passagem de pessoas com determinadas cores de roupas e verifica se estão utilizando os Equipamentos de Proteção Individual (EPIs) adequados para suas respectivas áreas</b>. Esse é um tema de relevância significativa no contexto dos ambientes de trabalho, pois esse tipo de sistema desempenha um papel crucial na promoção da segurança dos funcionários, bem como na conformidade com as normas de segurança estabelecidas no local de trabalho.</p>
+        <p>Ao associar cores específicas de roupas a setores ou áreas dentro de uma empresa, o sistema de vídeo é capaz de identificar prontamente situações em que indivíduos transgridem as restrições de acesso a determinadas áreas. Esse recurso é particularmente útil em ambientes onde o acesso a locais específicos é restrito ou quando diferentes áreas possuem requisitos de segurança distintos. Ao detectar e registrar tais ocorrências, o sistema de vídeo contribui para a prevenção de acidentes indesejados.</p>
+        <p>Ademais, a implementação desse sistema pode otimizar a eficiência dos processos de controle de acesso e de conformidade com as normas de segurança. Os registros e alertas gerados pelo sistema de vídeo permitem que a equipe de segurança e os gestores acompanhem e analisem o cumprimento das normas por parte dos funcionários no que diz respeito ao uso dos EPIs e ao acesso a áreas restritas. Essa funcionalidade facilita a identificação de padrões comportamentais, viabilizando a tomada de medidas corretivas e o aprimoramento contínuo, com o intuito de garantir a segurança geral no ambiente de trabalho.</p>
+        <p>Em síntese, esse sistema vai auxiliar na pronta identificação de indivíduos que adentram áreas não autorizadas, estimula o uso adequado dos equipamentos de proteção e contribui para a prevenção de acidentes e lesões, estabelecendo assim um ambiente de trabalho mais seguro para todos os colaboradores.</p>
+
+        <div class="center">
+            <div style="width: 30%;">
+                <img width="400px" src="https://cdn.pixabay.com/photo/2017/08/03/21/37/construction-2578410_1280.jpg"/>
+            </div>
+            <div style="width: 70%;">
+                <p><b>ENTREVISTAS:</b></p>
+            
+                <p>Para concluir se o tema era relevante, foram três entrevistas sobre o tema. Durante essas entrevistas, foi conversado com profissionais de diferentes setores, os impactos que um sistema de baixo custo que faça a detecção do uso de EPI’s teria no mercado das indústrias. Segue abaixo o resumo das entrevistas:</p>
+
+                <div class="display-grid-buttons">
+                    <a href="../Entrevistas/Ent01/index.html">
+                        <div class="btn-connection btn-lab">
+                            <span>ENTREVISTA 01</span>
+                        </div>
+                    </a>
+                    <a href="../Entrevistas/Ent02/index.html">
+                        <div class="btn-connection btn-lab">
+                            <span>ENTREVISTA 02</span>
+                        </div>
+                    </a>
+                    <a href="../Entrevistas/Ent03/index.html">
+                        <div class="btn-connection btn-lab">
+                            <span>ENTREVISTA 03</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <p><b>ITENS OBRIGATÓRIOS DO SISTEMA:</b></p>
+        <p>Detecção da faixa de cor da camiseta do indivíduo para ser comparada com os dados base do projeto.</p>
+        <p>Detecção condicional dos uso de EPI’s a depender da coloração da roupa do indivíduo.</p>
+        <p>Aviso em tela sobre se o indivíduo está dentro das normas de segurança da empresa.</p>
+        <p>Salvamento de imagens em caso de não conformidade às normas de segurança.</p>
+
+        <br/>
+
+        <p><b>ITENS OPCIONAIS DO SISTEMA:</b></p>
+        <p>Tomada de ação por gestos do indivíduo diretamente ao sistema, como ajustes de imagem por gestos.</p>
+        <p>Reconhecimento facial.</p>
+        <p>Interface gráfica do sistema.</p>
+        <p>Executável do sistema.</p>
+    </div>
+
+</body>
+       
+  
