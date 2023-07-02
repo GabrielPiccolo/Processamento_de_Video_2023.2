@@ -145,6 +145,7 @@ cap.release()
 cv.destroyAllWindows()
         </code></pre>
         <p>Resultado:</p>
+        <img src="../../../Assets/Imgs/letraa.JPG" width="500px" height="auto"/>
 
         <p>(b) Modifique novamente, para incluir uma filtragem - da aula anterior, na imagem de entrada da webcam.</p>
         <p>O codigo a seguir faz a mesma coisa do anterior, porem adiciona um gaussianblur: blur = cv.GaussianBlur(img,(5,5),0)</p>
@@ -201,66 +202,89 @@ cv.destroyAllWindows()
           cv.destroyAllWindows()
         </code></pre>
         <p>Resultado:</p>
+        <img src="../../../Assets/Imgs/letraB.JPG" width="500px" height="auto"/>
 
         <p>(c) Adicionalmente modifique o programa para salvar um video dos experimentos.</p>
         <p>Neste código, um objeto VideoWriter é criado usando o codec de vídeo 'XVID', uma taxa de frames de 20.0 e o tamanho dos frames definido como (640, 480). Você pode ajustar esses parâmetros conforme necessário. O quadro atual capturado pela webcam é gravado no arquivo de vídeo usando o método write() do objeto VideoWriter.</p>
         <p>Codigo:</p>
         <pre><code>
-import cv2 as cv
-import numpy as np
-
-cap = cv.VideoCapture(0)
-
-# Define o codec de vídeo e outras configurações
-fourcc = cv.VideoWriter_fourcc(*'XVID')
-out = cv.VideoWriter('output.avi', fourcc, 20.0, (640, 480))
-
-while True:
-    # Take each frame
-    ret, frame = cap.read()
-
-    # Convert BGR to HSV
-    hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-
-    # Define range of blue color in HSV
-    lower_blue = np.array([110, 50, 50])
-    upper_blue = np.array([130, 255, 255])
-
-    # Threshold the HSV image to get only blue colors
-    mask = cv.inRange(hsv, lower_blue, upper_blue)
-
-    # Bitwise-AND mask and original image
-    res = cv.bitwise_and(frame, frame, mask=mask)
-
-    # Convert the 2D mask to 3D
-    mask_3d = cv.cvtColor(mask, cv.COLOR_GRAY2BGR)
-
-    # Combine the three images side by side
-    combined_image = np.hstack((frame, mask_3d, res))
-
-    # Display the combined image
-    cv.imshow('Combined Image', combined_image)
-
-    # Write the frame to the video file
-    out.write(frame)
-
-    # Wait for key press
-    key = cv.waitKey(1)
-
-    # Check if the 'Esc' key is pressed to exit
-    if key == 27:
-        break
-
-# Release the video capture object, close the video writer, and close all windows
-cap.release()
-out.release()
-cv.destroyAllWindows()
+          import cv2 as cv
+          import numpy as np
+          
+          cap = cv.VideoCapture(0)
+          
+          # Define the codec for the video output
+          fourcc = cv.VideoWriter_fourcc(*'mp4v')
+          
+          # Define the video writer object
+          out = cv.VideoWriter('output.mp4', fourcc, 20.0, (1920, 480))
+          
+          while True:
+              # Take each frame
+              ret, frame = cap.read()
+          
+              # Convert BGR to HSV
+              hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+          
+              # Define range of blue color in HSV
+              lower_blue = np.array([110, 50, 50])
+              upper_blue = np.array([130, 255, 255])
+          
+              # Threshold the HSV image to get only blue colors
+              mask = cv.inRange(hsv, lower_blue, upper_blue)
+          
+              # Bitwise-AND mask and original image
+              res = cv.bitwise_and(frame, frame, mask=mask)
+          
+              # Convert the 2D mask to 3D
+              mask_3d = cv.cvtColor(mask, cv.COLOR_GRAY2BGR)
+          
+              # Resize the images to the same height
+              frame = cv.resize(frame, (640, 480))
+              mask_3d = cv.resize(mask_3d, (640, 480))
+              res = cv.resize(res, (640, 480))
+          
+              # Combine the three images side by side
+              combined_image = np.hstack((frame, mask_3d, res))
+          
+              # Display the combined image
+              cv.imshow('Combined Image', combined_image)
+          
+              # Write the combined image to the video file
+              out.write(combined_image)
+          
+              # Wait for key press
+              key = cv.waitKey(1)
+          
+              # Check if the 'Esc' key is pressed to exit
+              if key == 27:
+                  break
+          
+          # Release the video capture object, close the video writer, and close all windows
+          cap.release()
+          out.release()
+          cv.destroyAllWindows()
         </code></pre>
         <p>Resultado:</p>
-
+        <p>
+        <video width="640" height="480" controls>
+          <source src="../../../Assets/Videos/output.mp4" type="video/mp4">
+        </p>
 
         <li>3) Exercício em equipe:</li>
         <p>Tente encontrar uma maneira de extrair mais de um objeto colorido, por exemplo, extraia objetos vermelhos, azuis e verdes simultaneamente.</p>
+        <p>
+          Cada quadro do vídeo é lido em um loop usando cap.read().
+O espaço de cores do quadro é convertido de BGR para HSV usando cv.cvtColor(). A conversão para HSV é comum ao trabalhar com detecção de cores.
+Três intervalos de cor são definidos para as cores vermelha, azul e verde no espaço de cores HSV.
+Cada intervalo de cor é usado para criar uma máscara de cor correspondente usando cv.inRange(). A função cv.inRange() gera uma máscara binária onde os pixels que caem dentro do intervalo de cor são brancos (255) e os pixels fora do intervalo são pretos (0).
+As máscaras de cor são aplicadas ao quadro original usando cv.bitwise_and(), produzindo três imagens resultantes (uma para cada cor) onde apenas os pixels correspondentes à cor específica são mantidos e o restante é preto.
+As três imagens resultantes (vermelha, azul e verde) são combinadas lado a lado usando np.hstack().
+A imagem combinada é exibida em uma janela usando cv.imshow().
+O loop continua até que a tecla "Esc" seja pressionada (checado com key == 27).
+No final, o objeto de captura de vídeo é liberado com cap.release() e todas as janelas são fechadas com cv.destroyAllWindows().
+Em resumo, o código captura o vídeo da câmera e mostra o vídeo processado em tempo real, onde objetos de cores específicas (vermelho, azul e verde) são destacados.
+        </p>
         <pre><code>
 import cv2 as cv
 import numpy as np
