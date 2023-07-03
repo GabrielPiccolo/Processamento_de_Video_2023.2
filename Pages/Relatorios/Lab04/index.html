@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 50px;
+      color: black;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 24px;
+      font-weight: bolder;
+      padding-bottom: 30px;
+    }
+
+    h2 {
+      color: #666;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 20px 0px 20px 0px;
+    }
+
+    p {
+      color: black;
+      font-size: 16px;
+    }
+
+    code {
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      background-color: #f5f5f5;
+      padding: 2px 4px;
+    }
+
+    pre {
+      background-color: #f5f5f5;
+      padding: 10px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Laboratório 3 – Histogramas e Limiarizaçao</h1>
+
+  <div class="section">
+    <h2>1. Introdução:</h2>
+    <p>Nessa laboratório aprendemos sobre as cores, utilizando a biblioteca openCV, e alguns comandas como cv2.calcHist, calcular o histograma, e realizar a equalização do histograma, realizar tipos de limiarização.</p>
+  </div>
+
+  <div class="section">
+    <h2>2. Fundamentos básicos:</h2>
+    <p>Saber trabalhar com html, python(bibliotecas numpy, openCV)<br>
+    Conhecimentos de Linux(Ubuntu)<br>
+    Conhecimento de lógica de programação no terminal<br>
+    Conhecer os comandos para visualizar e gravar imagens e vídeos
+    Utilizar comandos para alterar cores<br>
+    Calcular histograma e limiarização <br>
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>3. Materiais e Métodos:</h2>
+    <p>Usamos os arquivos dados no roteiro para seguir e resolver os problemas através do terminal no ubuntu. Para a gravação dos vídeos usamos a webcam fornecida no laboratorio, e utilizamos um código em openCV para capturar as imagens. Tambem utilizamos comandos em pyton para alterar as cores e calcular histograma e fazer a limiarização</p>
+  </div>
+
+  <div class="section">
+    <h2>4. Resultados e Análises:</h2>
+
+    <div class="subsection">
+      <h3>Objetivos:</h3>
+      <ul>
+        
+        <p> </p>
+        <li>(1) Desenvolva um programa para fazer a leitura de sua imagem, convertendo para tons de cinza, calcular o histograma, e realizar a equalização do histograma pelo método mais simples. Ao toque de uma tecla, o programa deve salvar a imagem de entrada em cinza e a imagem equalizada, através de comando OpenCV. Salve também as imagens dos gráficos de histograma antes e depois da equalização, através de comando do matplotlib.</li>
+        <p>O programa a seguir utiliza a biblioteca OpenCV e o Matplotlib para realizar a leitura de uma imagem, converter para tons de cinza, calcular o histograma e realizar a equalização do histograma. Ele também salva as imagens resultantes e os gráficos de histograma antes e depois da equalização.</p>
+
+        <pre><code>
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+def equalize_histogram(image):
+    # Converter para tons de cinza
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Calcular o histograma
+    hist = cv2.calcHist([gray_image], [0], None, [256], [0, 256])
+
+    # Equalizar o histograma
+    equalized_image = cv2.equalizeHist(gray_image)
+
+    # Calcular o histograma equalizado
+    equalized_hist = cv2.calcHist([equalized_image], [0], None, [256], [0, 256])
+
+    return gray_image, equalized_image, hist, equalized_hist
+
+def save_image(image, filename):
+    cv2.imwrite(filename, image)
+
+def plot_histogram(hist, title):
+    plt.figure()
+    plt.title(title)
+    plt.xlabel("Bins")
+    plt.ylabel("# of Pixels")
+    plt.plot(hist)
+    plt.xlim([0, 256])
+    plt.show()
+
+def main():
+    # Carregar a imagem
+    image = cv2.imread("input_image.jpg")
+
+    # Realizar equalização do histograma
+    gray_image, equalized_image, hist, equalized_hist = equalize_histogram(image)
+
+    # Salvar as imagens resultantes
+    save_image(gray_image, "gray_image.jpg")
+    save_image(equalized_image, "equalized_image.jpg")
+
+    # Salvar os gráficos de histograma
+    plot_histogram(hist, "Histogram - Original Image")
+    plot_histogram(equalized_hist, "Histogram - Equalized Image")
+
+if __name__ == "__main__":
+    main()
+
+        </code></pre>
+
+        <p>Certifique-se de substituir "input_image.jpg" pelo caminho da imagem que você deseja processar. As imagens resultantes, em tons de cinza e equalizadas, serão salvas como "gray_image.jpg" e "equalized_image.jpg", respectivamente. </p>
+
+        <p>Resultado:</p>
+
+        <p>Gabriel:</p>
+        <img src="../../../Assets/Imgs/lab04/gabriel.JPG" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/lab04/gabriel_gray.JPG" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/lab04/equalized_image.JPG" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/lab04/histograma.JPG" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/lab04/histograma_equa.JPG" width="500px" height="auto"/>
+        
+
+        <p>Micael:</p>
+        <img src="../../../Assets/Imgs/lab04/michael.JPG" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/lab04/micael_gray.JPG" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/lab04/equalized_image2.JPG" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/lab04/histograma2.JPG" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/lab04/histograma_equa2.JPG" width="500px" height="auto"/>
+
+        <p>Joao:</p>
+        <img src="../../../Assets/Imgs/lab04/michael.JPG" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/lab04/micael_gray.JPG" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/lab04/equalized_image2.JPG" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/lab04/histograma2.JPG" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/lab04/histograma_equa2.JPG" width="500px" height="auto"/>
+        
+        
+
+
+        <li>(2) Outro programa modificando o item (1), agora fazendo a leitura de imagem da webcam.</li>
+        <p>Neste caso, o programa deve adicionalmente mostrar uma janela ao vivo com a imagem cinza e o resultado da imagem equalizada.</p>
+        
+        <pre><code>
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+def equalize_histogram(image):
+    # Converter para tons de cinza
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Calcular o histograma
+    hist = cv2.calcHist([gray_image], [0], None, [256], [0, 256])
+
+    # Equalizar o histograma
+    equalized_image = cv2.equalizeHist(gray_image)
+
+    # Calcular o histograma equalizado
+    equalized_hist = cv2.calcHist([equalized_image], [0], None, [256], [0, 256])
+
+    return gray_image, equalized_image, hist, equalized_hist
+
+def save_image(image, filename):
+    cv2.imwrite(filename, image)
+
+def plot_histogram(hist, title):
+    plt.figure()
+    plt.title(title)
+    plt.xlabel("Bins")
+    plt.ylabel("# of Pixels")
+    plt.plot(hist)
+    plt.xlim([0, 256])
+    plt.show()
+
+def main():
+    # Inicializar a captura de vídeo da webcam
+    cap = cv2.VideoCapture(0)
+
+    while True:
+        # Ler um quadro da webcam
+        ret, frame = cap.read()
+
+        # Verificar se a leitura do quadro foi bem-sucedida
+        if not ret:
+            break
+
+        # Realizar equalização do histograma
+        gray_image, equalized_image, hist, equalized_hist = equalize_histogram(frame)
+
+        # Exibir as imagens em uma janela ao vivo
+        cv2.imshow("Original Image", gray_image)
+        cv2.imshow("Equalized Image", equalized_image)
+
+        # Salvar as imagens resultantes
+        save_image(gray_image, "gray_image.jpg")
+        save_image(equalized_image, "equalized_image.jpg")
+
+        # Salvar os gráficos de histograma
+        plot_histogram(hist, "Histogram - Original Image")
+        plot_histogram(equalized_hist, "Histogram - Equalized Image")
+
+        # Verificar se a tecla 'q' foi pressionada para sair do loop
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    # Liberar os recursos
+    cap.release()
+    cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    main()
+        </code></pre>
+
+        <p>
+            Este código irá abrir uma janela ao vivo com a imagem da webcam exibida em tons de cinza, bem como o resultado da imagem equalizada. A tecla 'q' pode ser pressionada para fechar a janela e encerrar o programa.
+        </p>
+
+        <p>Resultado:</p>
+
+        <p>(3) Estudo da binarização. Desenvolva outro programa modificando o item (1), realizando os tres tipos de limiarização do tutorial - simple, adaptativa, e Otsu.</p>
+
+        <P>Neste código, foram adicionadas três novas funções para implementar diferentes técnicas de limiarização de imagens: limiarização simples, limiarização adaptativa e limiarização de Otsu. Além disso, a função main foi modificada para chamar essas novas funções e salvar as imagens resultantes. Agora, o programa pode realizar a equalização do histograma da imagem original, exibir os histogramas correspondentes e também aplicar três tipos diferentes de limiarização, salvando as imagens resultantes de cada técnica. Essas adições permitem uma maior flexibilidade e possibilitam a comparação dos resultados obtidos com diferentes métodos de limiarização.</P>
+
+        <pre><code>
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def equalize_histogram(image):
+    # Converter para tons de cinza
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Calcular o histograma
+    hist = cv2.calcHist([gray_image], [0], None, [256], [0, 256])
+
+    # Equalizar o histograma
+    equalized_image = cv2.equalizeHist(gray_image)
+
+    # Calcular o histograma equalizado
+    equalized_hist = cv2.calcHist([equalized_image], [0], None, [256], [0, 256])
+
+    return gray_image, equalized_image, hist, equalized_hist
+
+
+def threshold_simple(image):
+    # Converter para tons de cinza
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Aplicar limiarização simples
+    _, thresholded_image = cv2.threshold(gray_image, 127, 255, cv2.THRESH_BINARY)
+
+    return thresholded_image
+
+
+def threshold_adaptive(image):
+    # Converter para tons de cinza
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Aplicar limiarização adaptativa
+    thresholded_image = cv2.adaptiveThreshold(
+        gray_image, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2
+    )
+
+    return thresholded_image
+
+
+def threshold_otsu(image):
+    # Converter para tons de cinza
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Aplicar limiarização de Otsu
+    _, thresholded_image = cv2.threshold(
+        gray_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU
+    )
+
+    return thresholded_image
+
+
+def save_image(image, filename):
+    cv2.imwrite(filename, image)
+
+
+def plot_histogram(hist, title):
+    plt.figure()
+    plt.title(title)
+    plt.xlabel("Bins")
+    plt.ylabel("# of Pixels")
+    plt.plot(hist)
+    plt.xlim([0, 256])
+    plt.show()
+
+
+def main():
+    # Carregar a imagem
+    image = cv2.imread("gabriel.jpg")
+
+    # Realizar equalização do histograma
+    gray_image, equalized_image, hist, equalized_hist = equalize_histogram(image)
+
+    # Salvar as imagens resultantes
+    save_image(gray_image, "gray_image.jpg")
+    save_image(equalized_image, "equalized_image.jpg")
+
+    # Salvar os gráficos de histograma
+    plot_histogram(hist, "Histogram - Original Image")
+    plot_histogram(equalized_hist, "Histogram - Equalized Image")
+
+    # Aplicar limiarização simples
+    thresholded_image_simple = threshold_simple(image)
+    save_image(thresholded_image_simple, "thresholded_image_simple.jpg")
+
+    # Aplicar limiarização adaptativa
+    thresholded_image_adaptive = threshold_adaptive(image)
+    save_image(thresholded_image_adaptive, "thresholded_image_adaptive.jpg")
+
+    # Aplicar limiarização de Otsu
+    thresholded_image_otsu = threshold_otsu(image)
+    save_image(thresholded_image_otsu, "thresholded_image_otsu.jpg")
+
+
+if __name__ == "__main__":
+    main()
+
+        </code></pre>
+
+        <img src="../../../Assets/Imgs/lab04/thresholded_image_simple.jpg" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/lab04/thresholded_image_otsu.jpg" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/lab04/thresholded_image_adaptive.jpg" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/lab04/histograma_equaexe3.JPG" width="500px" height="auto"/>
+
+        <p>(4) Estudo da equalização nas cores: Desenvolva outro programa modificando o item (1), porém sem converter para cinza, mas agora realizando a equalização nas três cores separadamente, e juntar os canais equalizados na imagem colorida de saída.</p>
+
+        <p>Nesta versão modificada, a função equalize_histogram separa os canais de cores B (azul), G (verde) e R (vermelho) da imagem de entrada e realiza a equalização do histograma em cada canal separadamente. Em seguida, os canais equalizados são juntados novamente para formar a imagem de saída colorida. Além disso, os histogramas equalizados são calculados para cada canal de cor e são salvos e exibidos separadamente.</p>
+
+        <pre><code>
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+def equalize_histogram(image):
+    # Separar os canais de cores
+    b, g, r = cv2.split(image)
+
+    # Equalizar os histogramas dos canais de cores
+    b_equalized = cv2.equalizeHist(b)
+    g_equalized = cv2.equalizeHist(g)
+    r_equalized = cv2.equalizeHist(r)
+
+    # Juntar os canais equalizados
+    equalized_image = cv2.merge((b_equalized, g_equalized, r_equalized))
+
+    # Calcular os histogramas equalizados
+    hist_b = cv2.calcHist([b_equalized], [0], None, [256], [0, 256])
+    hist_g = cv2.calcHist([g_equalized], [0], None, [256], [0, 256])
+    hist_r = cv2.calcHist([r_equalized], [0], None, [256], [0, 256])
+
+    return equalized_image, hist_b, hist_g, hist_r
+
+def save_image(image, filename):
+    cv2.imwrite(filename, image)
+
+def plot_histogram(hist, title):
+    plt.figure()
+    plt.title(title)
+    plt.xlabel("Bins")
+    plt.ylabel("# of Pixels")
+    plt.plot(hist)
+    plt.xlim([0, 256])
+    plt.show()
+
+def main():
+    # Carregar a imagem
+    image = cv2.imread("input_image.jpg")
+
+    # Realizar equalização do histograma nas cores separadas
+    equalized_image, hist_b, hist_g, hist_r = equalize_histogram(image)
+
+    # Salvar a imagem resultante
+    save_image(equalized_image, "equalized_image.jpg")
+
+    # Salvar os histogramas equalizados
+    plot_histogram(hist_b, "Histogram - Equalized Image (Blue Channel)")
+    plot_histogram(hist_g, "Histogram - Equalized Image (Green Channel)")
+    plot_histogram(hist_r, "Histogram - Equalized Image (Red Channel)")
+
+if __name__ == "__main__":
+    main()
+        </code></pre>
+
+        <p>Resultado:</p>
+
+        <img src="../../../Assets/Imgs/lab04/equalized_imageexe4.JPG" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/lab04/histogramaexe4_1.JPG" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/lab04/hisotgramaexe4_2.JPG" width="500px" height="auto"/>
+        <img src="../../../Assets/Imgs/lab04/hisotgramaexe_3.JPG" width="500px" height="auto"/>
