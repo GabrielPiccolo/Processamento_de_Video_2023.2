@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 50px;
+      color: black;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 24px;
+      font-weight: bolder;
+      padding-bottom: 30px;
+    }
+    
+    .display-grid-buttons{
+        gap: 30px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        padding: 40px;
+    }
+
+    .btn-connection{
+        width: 100%;
+        height: 50px;
+        border-radius: 7px;
+        background-color: rgb(0, 22, 88);
+        border: 1px solid white; 
+        text-align: center;
+        color: white;
+    }
+
+    .btn-connection:hover{
+        transform: scale(1.1);
+        background-color: cadetblue;
+    }
+
+    .btn-connection>span{
+        line-height: 50px;
+    }
+
+    h2 {
+      color: #666;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 20px 0px 20px 0px;
+    }
+
+    p {
+      color: black;
+      font-size: 16px;
+      text-align: justify;
+    }
+    
+    .center{
+        display: flex; flex-direction: row; justify-content: center; width: 100%;
+        gap: 30px;
+        padding: 20px 0px 20px 0px;
+    }
+
+    code {
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      background-color: #f5f5f5;
+      padding: 2px 4px;
+    }
+
+    pre {
+      background-color: #f5f5f5;
+      padding: 10px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .itens>div{
+      margin-top: 30px;
+      padding-bottom: 30px;
+      border-bottom: 1px dashed gray;
+    }
+
+    .itens span{
+      color: black;
+      font-weight: 700;
+      letter-spacing: 1px;
+      font-size: 16px;
+      text-decoration: underline;
+      text-transform: uppercase;
+      line-height: 20px;
+    }
+
+
+    .itens p {
+      text-align: justify;
+    }
+  </style>
+</head>
+<body>
+    <h1>TRABALHO - PROCESSAMENTO DE VÍDEO 2023.1</h1>
+
+    <div class="section">
+        <h2>Parte 2: Modelagem Funcional do Sistema de Processamento Visual (MFS):</h2>
+
+        <br/>
+        <p><b>TEMA:</b> Analise condicional do uso de EPI's por identificação de cores da roupa.</p>
+        <br/>
+        
+        <img src="../../../Assets/Imgs/FLUXOGRAMA.png" width="100%" height="auto">
+
+
+      </div>
+    
+      <div class="itens">
+        <div>
+          <span>INÍCIO</span>
+          <p>Essa é a etapa inicial do processo. Representa o ponto de partida do sistema ou programa.</p>
+        </div>
+        
+        <div>
+          <span>Código de abertura do executável</span>
+          <p>Nessa etapa, o código responsável pela abertura do executável é executado. Essa parte do processo pode incluir inicialização de variáveis, configurações iniciais e preparação do ambiente.</p>
+        </div>
+        
+        <div>
+          <span>Opções</span>
+          <p>Nessa etapa, o sistema oferece opções ao usuário para escolher o próximo passo a ser executado. Essas opções podem estar relacionadas a diferentes funcionalidades do sistema.</p>
+        </div>
+        
+        <div>
+          <span>ENCERRAR O PROGRAMA</span>
+          <p>Se o usuário escolher essa opção, o programa é encerrado e o processo termina.</p>
+        </div>
+        
+        <div>
+          <span>Abrir Câmera</span>
+          <p>Se o usuário selecionar essa opção, o programa é projetado para abrir a câmera e preparar-se para realizar a captura de imagens.</p>
+        </div>
+        
+        <div>
+          <span>Código de abertura da câmera</span>
+          <p>Essa etapa envolve o código necessário para abrir a câmera. Pode incluir o acesso ao dispositivo de câmera e a inicialização dos recursos necessários para a captura de imagens.</p>
+        </div>
+        
+        <div>
+          <span>Código de varredura de movimentos (WHILE)</span>
+          <p>Essa etapa envolve um loop (WHILE) que verifica se há algum movimento detectado pela câmera. O programa continua a executar essa etapa até que não haja mais movimentos detectados.</p>
+        </div>
+        
+        <div>
+          <span>MENSAGEM DE ERRO NA ABERTURA DA CÂMERA</span>
+          <p>Se ocorrer algum erro durante a abertura da câmera, essa etapa é acionada para exibir uma mensagem de erro na tela.</p>
+        </div>
+        
+        <div>
+          <span>Erro</span>
+          <p>Essa etapa representa um estado de erro ou falha no processo.</p>
+        </div>
+        
+        <div>
+          <span>Código para verificação de indivíduo</span>
+          <p>Essa etapa envolve o código necessário para verificar a presença de um indivíduo na imagem capturada pela câmera. Pode incluir algoritmos de detecção de objetos.</p>
+        </div>
+        
+        <div>
+          <span>Código para verificação da cor da camisa dessa pessoa</span>
+          <p>Essa etapa envolve o código necessário para verificar a cor da camisa da pessoa detectada na imagem capturada. Pode incluir algoritmos de processamento de imagem para identificar a cor da roupa.</p>
+        </div>
+        
+        <div>
+          <span>Código de Mostrar mensagem na tela</span>
+          <p>Essa etapa envolve o código para exibir uma mensagem na tela do sistema ou programa.</p>
+        </div>
+        
+        <div>
+          <span>MENSAGEM DE COR INDEVIDA</span>
+          <p>Se a cor da camisa da pessoa for incorreta, essa etapa é acionada para exibir uma mensagem de cor incorreta na tela.</p>
+        </div>
+        
+        <div>
+          <span>Código de verificação dos EPI’s daquela cor</span>
+          <p>Essa etapa envolve o código necessário para verificar se os Equipamentos de Proteção Individual (EPIs) na cor correspondente estão sendo usados pela pessoa.</p>
+        </div>
+        
+        <div>
+          <span>Código de verificação da presença de EPI’s</span>
+          <p>Essa etapa envolve o código necessário para verificar se os EPIs estão presentes na imagem capturada pela câmera. Pode incluir algoritmos de detecção de objetos para identificar a presença dos EPIs.</p>
+        </div>
+        
+        <div>
+          <span>MENSAGEM DE ACESSO LIBERADO</span>
+          <p>Se os EPIs adequados estiverem sendo usados, essa etapa é acionada para exibir uma mensagem de acesso liberado na tela.</p>
+        </div>
+        
+        <div>
+          <span>MENSAGEM DE ACESSO NEGADO</span>
+          <p>Se os EPIs estiverem incorretos ou ausentes, essa etapa é acionada para exibir uma mensagem de acesso negado na tela.</p>
+        </div>
+        
+        <div>
+          <span>Código de tirar foto da pessoa</span>
+          <p>Essa etapa envolve o código necessário para capturar uma foto da pessoa detectada pela câmera.</p>
+        </div>
+        
+      </div>
+
+</body>
+       
+  
