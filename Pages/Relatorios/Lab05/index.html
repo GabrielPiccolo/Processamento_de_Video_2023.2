@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 50px;
+      color: black;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 24px;
+      font-weight: bolder;
+      padding-bottom: 30px;
+    }
+
+    h2 {
+      color: #666;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 20px 0px 20px 0px;
+    }
+
+    p {
+      color: black;
+      font-size: 16px;
+    }
+
+    code {
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      background-color: #f5f5f5;
+      padding: 2px 4px;
+    }
+
+    pre {
+      background-color: #f5f5f5;
+      padding: 10px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Laboratório 5 – Subtraçao de fundo</h1>
+
+  <div class="section">
+    <h2>1. Introdução:</h2>
+    <p>Nessa laboratório alguns comandas de subtraçao de fundo.</p>
+  </div>
+
+  <div class="section">
+    <h2>2. Fundamentos básicos:</h2>
+    <p>Saber trabalhar com html, python(bibliotecas numpy, openCV)<br>
+    Conhecimentos de Linux(Ubuntu)<br>
+    Conhecimento de lógica de programação no terminal<br>
+    Conhecer os comandos para visualizar e gravar imagens e vídeos
+    Utilizar comandos para alterar cores<br>
+    Calcular histograma e limiarização <br>
+    Realizar subtraçao de fundo <br>
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>3. Materiais e Métodos:</h2>
+    <p>Usamos os arquivos dados no roteiro para seguir e resolver os problemas através do terminal no ubuntu. Para a gravação dos vídeos usamos a webcam fornecida no laboratorio, e utilizamos um código em openCV para capturar as imagens. Tambem utilizamos comandos em pyton para alterar as cores e calcular histograma e fazer a limiarização. Neste lab faremos o use de comandos para subtraçao de fundo</p>
+  </div>
+
+  <div class="section">
+    <h2>4. Resultados e Análises:</h2>
+
+    <div class="subsection">
+      <h3></h3>
+      <ul>
+        
+        <p> </p>
+        <li>(1) Desenvolva um programa para fazer a leitura de seu video
+            --utilize os videos com movimento lento e com movimento rápido, gravados anteriormente.</li>
+        <p>O programa deve realizar o deteção de movimento e rastreamento pelos métodos dos exercícios.
+            Deve ainda fazer a gravação do video de saída.</p>
+
+        <p>Este código utiliza a técnica de subtração de plano de fundo para identificar objetos em movimento em um vídeo. A subtração de plano de fundo é realizada usando o algoritmo MOG2 (Mixture of Gaussians), que compara cada quadro do vídeo com um modelo de plano de fundo estático para determinar as regiões de primeiro plano. A máscara resultante, que destaca o objeto em movimento, é aplicada ao quadro original. Além disso, é exibido o número do quadro atual no vídeo. Os quadros segmentados são armazenados em uma lista e, em seguida, gravados em um novo arquivo de vídeo. Isso permite obter um vídeo que mostra apenas o objeto em movimento, destacado em relação ao plano de fundo estático.</p>
+
+        <pre><code>
+import cv2 as cv
+import numpy as np
+
+# Abrir o vídeo do seu computador
+video_path = 'lento.avi'
+capture = cv.VideoCapture(video_path)
+
+# Obter informações do vídeo original
+fps = capture.get(cv.CAP_PROP_FPS)
+width = int(capture.get(cv.CAP_PROP_FRAME_WIDTH))
+height = int(capture.get(cv.CAP_PROP_FRAME_HEIGHT))
+
+# Configurar a gravação do vídeo
+output_path = "saida.mp4"
+fourcc = cv.VideoWriter_fourcc(*'XVID')
+output_file = cv.VideoWriter(output_path, fourcc, fps, (width, height), isColor=False)
+
+backSub = cv.createBackgroundSubtractorMOG2()
+
+frames = []
+while True:
+    ret, frame = capture.read()
+    if not ret:
+        break
+
+    fgMask = backSub.apply(frame)
+
+    cv.rectangle(frame, (10, 2), (100, 20), (255, 255, 255), -1)
+    cv.putText(frame, str(capture.get(cv.CAP_PROP_POS_FRAMES)), (15, 15),
+               cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0))
+
+    cv.imshow('Frame', frame)
+    cv.imshow('FG Mask', fgMask)
+
+    # Salvar o frame na lista
+    frames.append(fgMask)
+
+    keyboard = cv.waitKey(30)
+    if keyboard == ord('q') or keyboard == 27:
+        break
+
+# Salvar os frames em um arquivo de vídeo
+for frame in frames:
+    output_file.write(frame)
+
+# Liberar os recursos
+capture.release()
+output_file.release()
+cv.destroyAllWindows()
+        </code></pre>
+
+        <p>Resultado:</p>
+
+        <video width="640" height="480" controls>
+            <source src="../../../Assets/Videos/lab05/exe1_lento.mp4" type="video/mp4">
+            Seu navegador não suporta o elemento de vídeo.
+        </video>
+
+        <video width="640" height="480" controls>
+            <source src="../../../Assets/Videos/lab05/exe1_rapido.mp4" type="video/mp4">
+            Seu navegador não suporta o elemento de vídeo.
+        </video>
+
+        <p></p>
+
+        <li>(2) Outro programa modificando o item (1), agora fazendo a leitura de imagem da webcam.
+            Neste caso, o programa deve adicionalmente mostrar uma janela ao vivo com a imagem e o resultado da imagem de rastreamento.
+            
+            Realize este experimento com cada integrante do grupo e com um objeto colorido. .</li>
+        <p></p>
+        
+        <pre><code>
+            import cv2 as cv
+            import numpy as np
+            
+            # Configurar a captura da webcam
+            capture = cv.VideoCapture(0)
+            
+            # Obter as informações da captura da webcam
+            fps = 30  # Definir a taxa de quadros por segundo
+            width = int(capture.get(cv.CAP_PROP_FRAME_WIDTH))
+            height = int(capture.get(cv.CAP_PROP_FRAME_HEIGHT))
+            
+            # Configurar o gravador de vídeo para "Background Subtraction"
+            fourcc = cv.VideoWriter_fourcc(*"mp4v")
+            output_path_bg = "background_subtraction.mp4"
+            output_file_bg = cv.VideoWriter(output_path_bg, fourcc, fps, (width, height))
+            
+            # Configurar o gravador de vídeo para "Blue Objects"
+            output_path_blue = "blue_objects.mp4"
+            output_file_blue = cv.VideoWriter(output_path_blue, fourcc, fps, (width, height))
+            
+            backSub = cv.createBackgroundSubtractorMOG2()
+            
+            while True:
+                # Ler o próximo frame da webcam
+                ret, frame = capture.read()
+            
+                if not ret:
+                    break
+            
+                fgMask = backSub.apply(frame)
+            
+                # Converter o frame para o espaço de cores HSV
+                hsv_frame = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+            
+                # Definir os intervalos de cor para azul
+                lower_blue = np.array([90, 50, 50])
+                upper_blue = np.array([130, 255, 255])
+            
+                # Criar uma máscara para a cor azul
+                mask_blue = cv.inRange(hsv_frame, lower_blue, upper_blue)
+            
+                # Aplicar a máscara na imagem original
+                blue_objects = cv.bitwise_and(frame, frame, mask=mask_blue)
+            
+                cv.rectangle(frame, (10, 2), (100, 20), (255, 255, 255), -1)
+                cv.putText(
+                    frame,
+                    str(capture.get(cv.CAP_PROP_POS_FRAMES)),
+                    (15, 15),
+                    cv.FONT_HERSHEY_SIMPLEX,
+                    0.5,
+                    (0, 0, 0),
+                )
+            
+                # Exibir as três telas
+                cv.imshow("Original", frame)
+                cv.imshow("Background Subtraction", fgMask)
+                cv.imshow("Blue Objects", blue_objects)
+            
+                # Salvar o frame no arquivo de vídeo "Background Subtraction"
+                output_file_bg.write(fgMask)
+                
+                # Salvar o frame no arquivo de vídeo "Blue Objects"
+                output_file_blue.write(blue_objects)
+            
+                keyboard = cv.waitKey(30)
+                if keyboard == ord("q") or keyboard == 27:
+                    break
+            
+            # Liberar os recursos
+            capture.release()
+            output_file_bg.release()
+            output_file_blue.release()
+            cv.destroyAllWindows()
+            
+        </code></pre>
+
+        <p>Resultado:</p>
+
+        
+        
