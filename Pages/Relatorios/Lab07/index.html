@@ -86,136 +86,167 @@
         <li>Faça mais de uma versão do programa, sendo pelo menos uma versão com modelos XML Haarcascade dos exercícios acima, e outra versão com modelo XML Haarcascade que não foi usado nos exercícios.</li>
         <li>O programa também deve salvar as imagens com identificação dos Objetos, ao toque de uma tecla.</li>
       
+        <p>Este código carrega o XML Haarcascade para detecção de faces e o utiliza para detectar faces na imagem. Em seguida, ele aplica a detecção de objetos azuis na imagem, utilizando a transformação de cores HSV e a filtragem por cor. Os objetos azuis detectados são destacados com retângulos verdes. </p>
 
-        <p> </p>
+        <p>O XML Haarcascade usado aqui foi: haarcascade_frontalface_default.xml</p>
 
         <pre><code>
+          import cv2
+
+          # Carregar o arquivo XML Haarcascade para detecção de face
+          cascade_path = 'haarcascade_frontalface_default.xml'
+          face_cascade = cv2.CascadeClassifier(cascade_path)
           
+          # Função para detectar objetos azuis na imagem
+          def detect_blue_objects(image):
+              # Converter a imagem para o espaço de cores HSV
+              hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+              
+              # Definir os limites da cor azul em HSV
+              lower_blue = (90, 50, 50)
+              upper_blue = (130, 255, 255)
+              
+              # Criar uma máscara para filtrar objetos azuis na imagem
+              mask = cv2.inRange(hsv, lower_blue, upper_blue)
+              
+              # Encontrar os contornos dos objetos azuis na máscara
+              contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+              
+              # Desenhar retângulos ao redor dos objetos azuis detectados
+              for contour in contours:
+                  x, y, w, h = cv2.boundingRect(contour)
+                  cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+              
+              return image
+          
+          # Carregar a imagem
+          image_path = 'cantea_azul.JPG'
+          image = cv2.imread(image_path)
+          
+          # Realizar a detecção de faces na imagem
+          gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+          faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+          
+          # Desenhar retângulos ao redor das faces detectadas
+          for (x, y, w, h) in faces:
+              cv2.rectangle(image, (x, y), (x+w, y+h), (255, 0, 0), 2)
+          
+          # Realizar a detecção de objetos azuis na imagem
+          image_with_blue_objects = detect_blue_objects(image)
+          
+          # Exibir a imagem resultante
+          cv2.imshow('Detecção de Objetos', image_with_blue_objects)
+          
+          # Verificar se a tecla 'q' foi pressionada para salvar a imagem
+          while True:
+              key = cv2.waitKey(1) & 0xFF
+              if key == ord('q'):
+                  cv2.imwrite('imagem_com_rostos_e_objetos_azuis.jpg', image_with_blue_objects)
+                  break
+          
+          cv2.destroyAllWindows()
         </code></pre>
 
+        <p>(Foto em grupo)</p>
         <p>Resultado:</p>
-        <img src="../../../Assets/Imgs/lab06/harris_corners.jpg" width="500px" height="auto"/>
+        
+        <img src="" alt="">
+
+        <p>O XML Haarcascade usado aqui foi: </p>
+        <pre><code>
+
+        </code></pre>
+
+        <p>(Foto avatar)</p>
+        <p>Resultado:</p>
+        
         
         <p></p>
 
         
         <p>(2) Outro programa modificando o item (1), agora fazendo a leitura de imagem da webcam.
-          Neste caso, o programa deve adicionalmente mostrar uma janela ao vivo com a imagem e o resultado da imagem de rastreamento.
-          programa lab6d.py</p>
+          Neste caso, o programa deve adicionalmente mostrar uma janela ao vivo com a imagem e o resultado da identificação do objeto.
+          Realize este experimento com um modelo XML. Salvar a imagem ao toque de uma tecla.</p>
         
-        <p>Este código em Python utiliza a biblioteca OpenCV para realizar a detecção de características em tempo real a partir da webcam. Ele inclui três métodos de detecção: Harris Corner Detection, Good Features to Track e Scale-Invariant Feature Transform (SIFT). O programa captura os frames da webcam e exibe-os em uma janela, juntamente com as detecções de características aplicadas a cada frame. Quando a tecla 'c' é pressionada, as imagens resultantes de cada detecção são armazenadas em arquivos separados. O código permite visualizar e capturar imagens com os resultados das detecções em tempo real, fornecendo uma base para aplicações que envolvem visão computacional e processamento de imagens.</p>
+        <p>O código modificado permite a detecção de faces e objetos azuis em tempo real usando a webcam. Ele utiliza o classificador de cascata Haarcascade para detectar faces e aplica um filtro de cor para identificar objetos azuis na imagem capturada. A cada quadro da webcam, os retângulos delimitadores são desenhados ao redor das faces detectadas e dos objetos azuis. Ao pressionar a tecla 'q', um print da webcam é salvo como "webcam_print.jpg". O programa continua em execução até que a tecla 'q' seja pressionada.</p>
 
         <pre><code>
-          import cv2
-          import numpy as np
-          
-          def detect_harris_corners(image):
-              gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-              gray = np.float32(gray)
-          
-              dst = cv2.cornerHarris(gray, 2, 3, 0.04)
-              dst = cv2.dilate(dst, None)
-              ret, dst = cv2.threshold(dst, 0.01 * dst.max(), 255, 0)
-              dst = cv2.convertScaleAbs(dst)
-          
-              image[dst > 0.01 * dst.max()] = [0, 0, 255]
-              return image
-          
-          def detect_good_features(image):
-              gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-          
-              corners = cv2.goodFeaturesToTrack(gray, 25, 0.01, 10)
-              corners = np.int0(corners)
-          
-              for corner in corners:
-                  x, y = corner.ravel()
-                  cv2.circle(image, (x, y), 3, (0, 255, 0), -1)
-          
-              return image
-          
-          def detect_sift_features(image):
-              gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-          
-              sift = cv2.SIFT_create()
-              keypoints = sift.detect(gray, None)
-          
-              image = cv2.drawKeypoints(image, keypoints, None)
-          
-              return image
-          
-          # Inicializar a webcam
-          cap = cv2.VideoCapture(0)
-          
-          # Variáveis para armazenar as imagens capturadas
-          captured_image_harris = None
-          captured_image_good = None
-          captured_image_sift = None
-          
-          while True:
-              # Capturar o frame da webcam
-              ret, frame = cap.read()
-          
-              # Verificar se a captura de vídeo foi bem-sucedida
-              if not ret:
-                  break
-          
-              # Realizar detecção de Harris corners no frame
-              harris_corners_frame = detect_harris_corners(frame)
-          
-              # Realizar detecção de Good features no frame
-              good_features_frame = detect_good_features(frame)
-          
-              # Realizar detecção de SIFT features no frame
-              sift_features_frame = detect_sift_features(frame)
-          
-              # Exibir o frame capturado e o resultado da detecção em uma janela
-              cv2.imshow("Detecção de Características", np.hstack((frame, harris_corners_frame, good_features_frame, sift_features_frame)))
-          
-              # Verificar se a tecla 'q' foi pressionada para encerrar o programa
-              key = cv2.waitKey(1)
-              if key & 0xFF == ord('q'):
-                  break
-              # Verificar se a tecla 'c' foi pressionada para capturar as imagens da webcam
-              elif key & 0xFF == ord('c'):
-                  captured_image_harris = harris_corners_frame.copy()
-                  captured_image_good = good_features_frame.copy()
-                  captured_image_sift = sift_features_frame.copy()
-                  print("Imagens capturadas!")
-          
-          # Liberar os recursos utilizados
-          cap.release()
-          cv2.destroyAllWindows()
-          
-          # Salvar as imagens capturadas, se houver
-          if captured_image_harris is not None:
-              cv2.imwrite("imagem_harris.jpg", captured_image_harris)
-          if captured_image_good is not None:
-              cv2.imwrite("imagem_good.jpg", captured_image_good)
-          if captured_image_sift is not None:
-              cv2.imwrite("imagem_sift.jpg", captured_image_sift)
+import cv2
+
+# Carregar o arquivo XML Haarcascade para detecção de face
+cascade_path = 'haarcascade_frontalface_default.xml'
+face_cascade = cv2.CascadeClassifier(cascade_path)
+
+# Função para detectar objetos azuis na imagem
+def detect_blue_objects(image):
+    # Converter a imagem para o espaço de cores HSV
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    
+    # Definir os limites da cor azul em HSV
+    lower_blue = (90, 50, 50)
+    upper_blue = (130, 255, 255)
+    
+    # Criar uma máscara para filtrar objetos azuis na imagem
+    mask = cv2.inRange(hsv, lower_blue, upper_blue)
+    
+    # Encontrar os contornos dos objetos azuis na máscara
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    # Desenhar retângulos ao redor dos objetos azuis detectados
+    for contour in contours:
+        x, y, w, h = cv2.boundingRect(contour)
+        cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+    
+    return image
+
+# Inicializar a webcam
+cap = cv2.VideoCapture(0)
+
+while True:
+    # Capturar o quadro da webcam
+    ret, frame = cap.read()
+    
+    # Verificar se o quadro foi capturado corretamente
+    if not ret:
+        print("Erro ao capturar o quadro da webcam.")
+        break
+    
+    # Realizar a detecção de faces no quadro
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+    
+    # Desenhar retângulos ao redor das faces detectadas
+    for (x, y, w, h) in faces:
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
+    
+    # Realizar a detecção de objetos azuis no quadro
+    frame_with_blue_objects = detect_blue_objects(frame)
+    
+    # Exibir o quadro com o resultado da detecção
+    cv2.imshow('Detecção de Objetos', frame_with_blue_objects)
+    
+    # Verificar se a tecla 'q' foi pressionada para salvar um print da webcam
+    key = cv2.waitKey(1) & 0xFF
+    if key == ord('q'):
+        # Salvar um print da webcam
+        cv2.imwrite('webcam_print.jpg', frame)
+        print("Print da webcam salvo com sucesso!")
+        break
+
+# Liberar os recursos
+cap.release()
+cv2.destroyAllWindows()
             
         </code></pre>
 
         <p>Resultado:</p>
+        <p>Gabriel</p>
+        <img src="../../../Assets/Imgs/lab07/gabriel_webcam.jpg" width="500px" height="auto"/>
 
-        <P>Gabriel</P>
-        <img src="../../../Assets/Imgs/lab06/gabriel.jpg" width="500px" height="auto"/>
-        <img src="../../../Assets/Imgs/lab06/gabriel2.jpg" width="500px" height="auto"/>
-        <img src="../../../Assets/Imgs/lab06/gabriel3.jpg" width="500px" height="auto"/>
+        <p>Resultado:</p>
+        <p>Joao</p>
 
-        <P>Micael</P>
-        <img src="../../../Assets/Imgs/lab06/imagem_good_micael.jpg" width="500px" height="auto"/>
-        <img src="../../../Assets/Imgs/lab06/imagem_harris_micael.jpg" width="500px" height="auto"/>
-        <img src="../../../Assets/Imgs/lab06/imagem_sift_micael.jpg" width="500px" height="auto"/>
-
-        <P>Joao</P>
-        <img src="../../../Assets/Imgs/lab06/imagem_good_joao.jpg" width="500px" height="auto"/>
-        <img src="../../../Assets/Imgs/lab06/imagem_harris_joao.jpg" width="500px" height="auto"/>
-        <img src="../../../Assets/Imgs/lab06/imagem_sift_joao.jpg" width="500px" height="auto"/>
-
-        <P>Tabuleiro</P>
-        <img src="../../../Assets/Imgs/lab06/imagem_good_tab.jpg" width="500px" height="auto"/>
-        <img src="../../../Assets/Imgs/lab06/imagem_harris_tab.jpg" width="500px" height="auto"/>
-        <img src="../../../Assets/Imgs/lab06/imagem_sift_tab.jpg" width="500px" height="auto"/>
+        <p>Resultado:</p>
+        <p>Micael</p>
         
         
