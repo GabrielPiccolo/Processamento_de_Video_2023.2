@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 50px;
+      color: black;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 24px;
+      font-weight: bolder;
+      padding-bottom: 30px;
+    }
+    
+    .display-grid-buttons{
+        gap: 30px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        padding: 40px;
+    }
+
+    .btn-connection{
+        width: 100%;
+        height: 50px;
+        border-radius: 7px;
+        background-color: rgb(0, 22, 88);
+        border: 1px solid white; 
+        text-align: center;
+        color: white;
+    }
+
+    .btn-connection:hover{
+        transform: scale(1.1);
+        background-color: cadetblue;
+    }
+
+    .btn-connection>span{
+        line-height: 50px;
+    }
+
+    h2 {
+      color: #666;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 20px 0px 20px 0px;
+    }
+
+    p {
+      color: black;
+      font-size: 16px;
+      text-align: justify;
+    }
+    
+    .center{
+        display: flex; flex-direction: row; justify-content: center; width: 100%;
+        gap: 30px;
+        padding: 20px 0px 20px 0px;
+    }
+
+    code {
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      background-color: #f5f5f5;
+      padding: 2px 4px;
+    }
+
+    pre {
+      background-color: #f5f5f5;
+      padding: 10px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .itens>div{
+      margin-top: 30px;
+      padding-bottom: 30px;
+      border-bottom: 1px dashed gray;
+    }
+
+    .itens span{
+      color: black;
+      font-weight: 700;
+      letter-spacing: 1px;
+      font-size: 16px;
+      text-decoration: underline;
+      text-transform: uppercase;
+      line-height: 20px;
+    }
+
+
+    .itens p {
+      text-align: justify;
+    }
+  </style>
+</head>
+<body>
+    <h1>TRABALHO - PROCESSAMENTO DE VÍDEO 2023.1</h1>
+
+    <div class="section">
+        <h2>Parte 3: Desenvolvimento do Sistema de Processamento Visual (SPV)Tarefa:</h2>
+
+        <br/>
+        <p><b>TEMA:</b> Analise condicional do uso de EPI's por identificação de cores da roupa.</p>
+        <br/>
+        
+        
+
+      </div>
+    
+      <div class="itens">
+        <div>Código explicado:</span>
+          <p>Essa é a etapa inicial do processo. Representa o ponto de partida do sistema ou programa.</p>
+          <pre><code>
+import cv2
+import numpy as np
+import time
+
+cascade_path = "haarcascade_frontalface_default.xml"
+face_cascade = cv2.CascadeClassifier(cascade_path)
+
+def detect_white_helmet(roi):
+    if roi.size == 0:
+        return roi
+    lower_white = np.array([200, 200, 200])
+    upper_white = np.array([255, 255, 255])
+    mask = cv2.inRange(roi, lower_white, upper_white)
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    if contours:
+        largest_contour = max(contours, key=cv2.contourArea)
+        x, y, w, h = cv2.boundingRect(largest_contour)
+        if w * h > 1000:
+            cv2.rectangle(roi, (x, y), (x + w, y + h), (0, 0, 255), 2)
+    return roi
+
+def detect_collar_color(roi):
+    if roi.size == 0:
+        return roi
+    hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+    lower_red = np.array([0, 70, 50])
+    upper_red = np.array([10, 255, 255])
+    lower_red2 = np.array([170, 70, 50])
+    upper_red2 = np.array([180, 255, 255])
+    mask1 = cv2.inRange(hsv, lower_red, upper_red)
+    mask2 = cv2.inRange(hsv, lower_red2, upper_red2)
+    mask = cv2.bitwise_or(mask1, mask2)
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    if contours:
+        largest_contour = max(contours, key=cv2.contourArea)
+        x, y, w, h = cv2.boundingRect(largest_contour)
+        if w * h > 1000:
+            cv2.rectangle(roi, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    return roi
+
+cap = cv2.VideoCapture(0)
+snapshot_count = 0
+start_time = None
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        print("Erro ao capturar o quadro da webcam.")
+        break
+
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=7, minSize=(60, 60))
+
+    helmet_detected = False
+    collar_detected = False
+
+    for x, y, w, h in faces:
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+
+        y0, y1 = max(0, y - h), y
+        roi_helmet = frame[y0:y1, x : x + w]
+        roi_with_helmet = detect_white_helmet(roi_helmet)
+        frame[y0:y1, x : x + w] = roi_with_helmet
+        if np.any(roi_with_helmet):
+            helmet_detected = True
+
+        y0, y1 = y + int(h * 1.1), min(y + int(h * 2.1), frame.shape[0])
+        roi_collar = frame[y0:y1, x : x + w]
+        roi_with_collar = detect_collar_color(roi_collar)
+        frame[y0:y1, x : x + w] = roi_with_collar
+        if np.any(roi_with_collar):
+            collar_detected = True
+
+    if len(faces) > 0 and start_time is None:
+        start_time = time.time()
+
+    if start_time is not None and time.time() - start_time >= 2:
+        if not helmet_detected or not collar_detected:
+            cv2.imwrite(f'snapshot_{snapshot_count}.jpg', frame)
+            snapshot_count += 1
+        start_time = None
+
+    cv2.imshow("Detecção de Objetos", frame)
+
+    key = cv2.waitKey(1) & 0xFF
+    if key == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
+          </code></pre>
+        </div>
+        
+    
+       
+  
