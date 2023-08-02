@@ -212,6 +212,73 @@ cv2.destroyAllWindows()
           </code></pre>
         </div>
         
-    
+
+            <h2>Introdução:</h2>
+    <p>
+        A detecção em tempo real de objetos é uma tarefa fundamental em diversas aplicações, desde vigilância e segurança até sistemas de auxílio à condução.
+        Neste trabalho, propomos um sistema que utiliza a biblioteca OpenCV (cv2) em Python para detectar, em tempo real, a presença de capacetes brancos e coletes vermelhos em indivíduos por meio da webcam.
+        O objetivo é monitorar o uso correto desses itens de segurança em um ambiente específico.
+    </p>
+
+    <h2>Metodologia:</h2>
+    <ol>
+        <li>
+            <strong>Importação de Bibliotecas e Definição de Funções:</strong>
+            <p>
+                A biblioteca cv2 (OpenCV) é importada para processamento de imagens.
+                A biblioteca numpy é importada para operações numéricas.
+                São definidas duas funções:
+                <ul>
+                    <li><code>detect_white_helmet(roi)</code>: Responsável por detectar a presença de um capacete branco na região de interesse (roi) passada como parâmetro.</li>
+                    <li><code>detect_collar_color(roi)</code>: Responsável por detectar a presença de um colete vermelho na região de interesse (roi) passada como parâmetro.</li>
+                </ul>
+            </p>
+        </li>
+        <li>
+            <strong>Inicialização de Variáveis e Captura de Vídeo:</strong>
+            <p>
+                É definido o caminho para o arquivo XML contendo os dados do classificador Haar Cascade para detecção facial (<code>cascade_path</code>).
+                É criado um objeto <code>face_cascade</code> utilizando o classificador Haar Cascade, específico para detecção de rostos.
+                A webcam é inicializada com a função <code>cv2.VideoCapture(0)</code> para capturar o vídeo em tempo real.
+                São inicializadas as variáveis <code>snapshot_count</code> e <code>start_time</code> para controle do número de fotos tiradas e do tempo de captura das fotos, respectivamente.
+            </p>
+        </li>
+        <li>
+            <strong>Loop Principal para Detecção em Tempo Real:</strong>
+            <p>
+                O código entra em um loop infinito, capturando um quadro (frame) por vez da webcam usando <code>cap.read()</code>.
+                O quadro é convertido para escala de cinza utilizando <code>cv2.cvtColor</code>.
+                O Haar Cascade é aplicado para detectar rostos na imagem em escala de cinza.
+                Para cada face detectada, um retângulo vermelho é desenhado ao redor da face no quadro principal (<code>frame</code>).
+                Duas regiões de interesse (ROI) são extraídas da imagem:
+                <ul>
+                    <li>Uma região na parte superior da cabeça, destinada à detecção do capacete branco.</li>
+                    <li>Uma região abaixo do rosto, destinada à detecção do colete vermelho.</li>
+                </ul>
+                As funções <code>detect_white_helmet</code> e <code>detect_collar_color</code> são chamadas para tentar detectar o capacete branco e o colete vermelho, respectivamente.
+                Se algum dos itens não for detectado em ambas as regiões de interesse, uma foto (snapshot) é tirada após dois segundos de detecção (tempo definido por <code>time.time() - start_time >= 2</code>).
+                O loop continua até que a tecla 'q' seja pressionada.
+            </p>
+        </li>
+        <li>
+            <strong>Finalização do Programa:</strong>
+            <p>
+                Quando a tecla 'q' é pressionada, o loop é interrompido.
+                A webcam é liberada utilizando <code>cap.release()</code>.
+                Todas as janelas abertas são fechadas por meio de <code>cv2.destroyAllWindows()</code>.
+            </p>
+        </li>
+    </ol>
+
+    <h2>Conclusão:</h2>
+    <p>
+        Este trabalho apresentou um sistema de detecção em tempo real de capacetes brancos e coletes vermelhos em indivíduos por meio da webcam, utilizando a biblioteca OpenCV em Python.
+        O sistema é capaz de detectar faces, verificar a presença dos itens de segurança nas regiões relevantes da face e tirar fotos caso algum item esteja ausente.
+        Esta solução pode ser aplicada em ambientes que requerem o uso desses equipamentos de segurança, como áreas de trabalho ou locais onde o uso de capacetes e coletes é obrigatório, contribuindo para a segurança e monitoramento adequado das
+    </p>
+  </div>
+</body>
+
+
        
   
