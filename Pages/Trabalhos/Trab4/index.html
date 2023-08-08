@@ -105,19 +105,22 @@
     <h1>TRABALHO - PROCESSAMENTO DE VÍDEO 2023.1</h1>
 
     <div class="section">
-        <h2>Parte 3: Desenvolvimento do Sistema de Processamento Visual (SPV)Tarefa:</h2>
+        <h2>Parte 4: Elaboração de Aplicação do SPV e Questionário Avaliativo (AQA)Tarefa</h2>
 
         <br/>
         <p><b>TEMA:</b> Analise condicional do uso de EPI's por identificação de cores da roupa.</p>
         <br/>
         
-        
-
       </div>
+      <H2>Cenário:</H2>
+      
+      <p>O código foi criado pensando em um cenário específico, ou seja ele irá funcionar apenas para o modelo que nós desenvolvemos. Caso tente ser usado em outro objetivo ele pode apresentar falhas.(por exemplo: no nosso caso o capacete é branco, ou seja se for tentar capturar as imagens dos funcionarios em um fundo branco, o codigo não irá funcionar)</p>
+
+      <p>O cenário escolhido, foi um cenário onde a câmera ficará em cima do local onde os funcionários irão bater o ponto, numa proximidade de até 50cm da câmera. Resumindo, ele caminhara até o local de batimento de ponto, virara para a câmera e nesse tempo a câmera sera capaz de analisar se ele esta usando o capacete e o colete, alem disso ela contara quantos funcionarios passam no local. Caso o mesmo esteja usando os equipamentos, tera um tempo de 4 segundos de fidelidade, ou seja caso ela detecte por mais de 4 segundos os equipamentos, o sistema identificara que ele esta usando corretamente os itens, e ira liberar seu acesso. Caso contrario, ele ira ficara tirando snapshots do funcionario, e aplicara tambem um filtro de nitidez para melhorar a imagem</p>
     
       <div class="itens">
         <div>Código explicado:</span>
-          <p>Essa é a etapa inicial do processo. Representa o ponto de partida do sistema ou programa.</p>
+          <p>Essa é a etapa inicial do processo. Representa o ponto de partida do sistema ou programa. Basta rodar o código para inciiar os testes.</p>
           <pre><code>
             #contagem,filtro e feacture de abertura
             import cv2
@@ -241,38 +244,17 @@
         </div>
         
 
-            <h2>Introdução:</h2>
-    <p>
-        Neste trabalho, desenvolvemos um sistema de detecção de rostos, capacetes e coletes em tempo real usando uma câmera de vídeo. O objetivo é verificar se um indivíduo está usando equipamento de segurança adequado (capacete e colete) por um período de 4 segundos antes de conceder acesso a uma área particular. Isso é especialmente útil em locais de trabalho industriais ou de construção onde o uso de equipamento de segurança é obrigatório.
-        O objetivo é monitorar o uso correto desses itens de segurança em um ambiente específico.
-    </p>
+        <H2>Perguntas:</H2>
 
-    <h2>Metodologia:</h2>
-    <p>
-        O sistema é construído usando a linguagem de programação Python e a biblioteca OpenCV para processamento de imagem e vídeo. 
-        O método de detecção de rosto é baseado em cascata de classificadores de Haar, uma abordagem eficaz e amplamente usada para a 
-        detecção de objetos em imagens.
-    </p>
-    <p>
-        O sistema processa cada quadro do vídeo da seguinte forma:
-        <ol>
-            <li>Ele converte o quadro para uma imagem em escala de cinza.</li>
-            <li>Ele detecta rostos na imagem em escala de cinza.</li>
-            <li>Para cada rosto detectado, ele verifica a região acima do rosto (possivelmente contendo um capacete) e a região abaixo do rosto (possivelmente contendo um colete).</li>
-            <li>Ele detecta capacetes e coletes nessas regiões por meio de segmentação de cor. Os capacetes são detectados procurando por regiões brancas e os coletes são detectados procurando por regiões vermelhas.</li>
-            <li>Se um rosto, capacete e colete forem detectados por um período contínuo de 4 segundos, o sistema imprime "Acesso liberado".</li>
-            <li>O sistema também captura uma imagem sempre que um rosto é detectado sem um capacete ou colete, ou mais de uma face é detectada. Ele salva a imagem original e uma versão com um filtro de nitidez aplicado.</li>
-        </ol>
-    </p>
+        <p>1. Como é o tempo de resposta do código quando uma pessoa entra no quadro? Ele identificou correntamento o rosto? </p>
+        <p>2. O código identificou os quadrados corretamenta do capacete(quadrado vermelho) e colete(quadrado verde)?</p>
+        <p>3. A contagem de pessoas, visto o cenário que imaginamos, foi correta?</p>
+        <p>4. Caso a pessoa não esteja usando o capacete, foi tirado as fotos com filtros?</p>
+        <p>5. Caso a pessoa esteja usando os itens corretamente, foi liberado sua passagem?</p>
 
-    <h2>Conclusão:</h2>
-    <p>
-        O sistema foi capaz de detectar com sucesso rostos, capacetes e coletes em tempo real. Ele conseguiu capturar imagens sempre que as 
-        condições de segurança não eram atendidas e só concedia acesso quando as condições de segurança eram atendidas por um período de 4 segundos. 
-        O uso de um filtro de nitidez também melhorou a visibilidade dos detalhes na imagem capturada. No entanto, a detecção de capacetes e coletes 
-        é baseada na cor e, portanto, pode ser afetada por variações de iluminação. Trabalhos futuros poderiam explorar o uso de técnicas mais avançadas 
-        para a detecção de capacetes e coletes, como a detecção de objetos com base em aprendizado profundo.
-    </p>
+        <h2>Links:</h2>
+        <p><a href="https://docs.google.com/forms/d/e/1FAIpQLScHcPjR8wIGfeA9lRORELkWf8npuy_RV8rLb_NNt4ngt28qYQ/viewform?usp=sf_link" target="_blank">Link Formulário</a></p>
+        <a href="https://docs.google.com/spreadsheets/d/16hiuGUmECbLUE7e5val4h8JflsW66AbplFLl-k50r1c/edit?usp=sharing" target="_blank">Link Respostas</a>
 </body>
 
 
