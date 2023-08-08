@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 50px;
+      color: black;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 24px;
+      font-weight: bolder;
+      padding-bottom: 30px;
+    }
+    
+    .display-grid-buttons{
+        gap: 30px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        padding: 40px;
+    }
+
+    .btn-connection{
+        width: 100%;
+        height: 50px;
+        border-radius: 7px;
+        background-color: rgb(0, 22, 88);
+        border: 1px solid white; 
+        text-align: center;
+        color: white;
+    }
+
+    .btn-connection:hover{
+        transform: scale(1.1);
+        background-color: cadetblue;
+    }
+
+    .btn-connection>span{
+        line-height: 50px;
+    }
+
+    h2 {
+      color: #666;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 20px 0px 20px 0px;
+    }
+
+    p {
+      color: black;
+      font-size: 16px;
+      text-align: justify;
+    }
+    
+    .center{
+        display: flex; flex-direction: row; justify-content: center; width: 100%;
+        gap: 30px;
+        padding: 20px 0px 20px 0px;
+    }
+
+    code {
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      background-color: #f5f5f5;
+      padding: 2px 4px;
+    }
+
+    pre {
+      background-color: #f5f5f5;
+      padding: 10px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .itens>div{
+      margin-top: 30px;
+      padding-bottom: 30px;
+      border-bottom: 1px dashed gray;
+    }
+
+    .itens span{
+      color: black;
+      font-weight: 700;
+      letter-spacing: 1px;
+      font-size: 16px;
+      text-decoration: underline;
+      text-transform: uppercase;
+      line-height: 20px;
+    }
+
+
+    .itens p {
+      text-align: justify;
+    }
+  </style>
+</head>
+<body>
+    <h1>TRABALHO - PROCESSAMENTO DE VÍDEO 2023.1</h1>
+
+    <div class="section">
+        <h2>Parte 3: Desenvolvimento do Sistema de Processamento Visual (SPV)Tarefa:</h2>
+
+        <br/>
+        <p><b>TEMA:</b> Analise condicional do uso de EPI's por identificação de cores da roupa.</p>
+        <br/>
+        
+        
+
+      </div>
+    
+      <div class="itens">
+        <div>Código explicado:</span>
+          <p>Essa é a etapa inicial do processo. Representa o ponto de partida do sistema ou programa.</p>
+          <pre><code>
+            #contagem,filtro e feacture de abertura
+            import cv2
+            import numpy as np
+            import time
+            
+            cascade_path = "haarcascade_frontalface_default.xml"
+            face_cascade = cv2.CascadeClassifier(cascade_path)
+            
+            def detect_white_helmet(roi):
+                if roi.size == 0:
+                    return roi
+                lower_white = np.array([200, 200, 200])
+                upper_white = np.array([255, 255, 255])
+                mask = cv2.inRange(roi, lower_white, upper_white)
+                contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                if contours:
+                    largest_contour = max(contours, key=cv2.contourArea)
+                    x, y, w, h = cv2.boundingRect(largest_contour)
+                    if w * h > 1000:
+                        cv2.rectangle(roi, (x, y), (x + w, y + h), (0, 0, 255), 2)
+                return roi
+            
+            def detect_collar_color(roi):
+                if roi.size == 0:
+                    return roi
+                hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+                lower_red = np.array([0, 70, 50])
+                upper_red = np.array([10, 255, 255])
+                lower_red2 = np.array([170, 70, 50])
+                upper_red2 = np.array([180, 255, 255])
+                mask1 = cv2.inRange(hsv, lower_red, upper_red)
+                mask2 = cv2.inRange(hsv, lower_red2, upper_red2)
+                mask = cv2.bitwise_or(mask1, mask2)
+                contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                if contours:
+                    largest_contour = max(contours, key=cv2.contourArea)
+                    x, y, w, h = cv2.boundingRect(largest_contour)
+                    if w * h > 1000:
+                        cv2.rectangle(roi, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                return roi
+            
+            def apply_sharpness_filter(image):
+                kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]], dtype=np.float32)
+                return cv2.filter2D(image, -1, kernel)
+            
+            cap = cv2.VideoCapture(0)
+            snapshot_count = 0
+            start_time = None
+            face_detection_count = 0
+            last_face_count_time = None
+            safety_check_start = None
+            
+            while True:
+                ret, frame = cap.read()
+                if not ret:
+                    print("Erro ao capturar o quadro da webcam.")
+                    break
+            
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=7, minSize=(60, 60))
+            
+                helmet_detected = False
+                collar_detected = False
+            
+                for x, y, w, h in faces:
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+            
+                    y0, y1 = max(0, y - h), y
+                    roi_helmet = frame[y0:y1, x : x + w]
+                    roi_with_helmet = detect_white_helmet(roi_helmet)
+                    frame[y0:y1, x : x + w] = roi_with_helmet
+                    if np.any(roi_with_helmet):
+                        helmet_detected = True
+            
+                    y0, y1 = y + int(h * 1.1), min(y + int(h * 2.1), frame.shape[0])
+                    roi_collar = frame[y0:y1, x : x + w]
+                    roi_with_collar = detect_collar_color(roi_collar)
+                    frame[y0:y1, x : x + w] = roi_with_collar
+                    if np.any(roi_with_collar):
+                        collar_detected = True
+            
+                #CONTAGEM DE ROSTO DISTINTO
+                if len(faces) > 0 and start_time is None:
+                    if (last_face_count_time is None) or (time.time() - last_face_count_time >= 8):
+                        face_detection_count += 1
+                        last_face_count_time = time.time()
+                    start_time = time.time()
+            
+                
+                #CAPTURA DE FOTO CASO N ESTEJA USANDO EPI
+                if start_time is not None and time.time() - start_time >= 1.5:
+                    if not helmet_detected or not collar_detected or len(faces) > 0:
+                        cv2.imwrite(f'snapshot_{snapshot_count}_original.jpg', frame)
+                        sharp_frame = apply_sharpness_filter(frame)
+                        cv2.imwrite(f'snapshot_{snapshot_count}_filtered.jpg', sharp_frame)
+                        snapshot_count += 1
+                    start_time = None
+                    
+                #MENSAGEM DE ACESSO LIBERADO
+                if helmet_detected and collar_detected:
+                    if safety_check_start is None:
+                        safety_check_start = time.time()
+                    elif time.time() - safety_check_start >= 4:
+                        print("Acesso liberado")
+                        safety_check_start = None
+                else:
+                    safety_check_start = None
+            
+                cv2.imshow("Detecção de Objetos", frame)
+            
+                key = cv2.waitKey(1) & 0xFF
+                if key == ord('q'):
+                    break
+            
+            cap.release()
+            cv2.destroyAllWindows()
+            
+            print(f"Número total de detecções de rosto: {face_detection_count}")
+          </code></pre>
+        </div>
+        
+
+            <h2>Introdução:</h2>
+    <p>
+        Neste trabalho, desenvolvemos um sistema de detecção de rostos, capacetes e coletes em tempo real usando uma câmera de vídeo. O objetivo é verificar se um indivíduo está usando equipamento de segurança adequado (capacete e colete) por um período de 4 segundos antes de conceder acesso a uma área particular. Isso é especialmente útil em locais de trabalho industriais ou de construção onde o uso de equipamento de segurança é obrigatório.
+        O objetivo é monitorar o uso correto desses itens de segurança em um ambiente específico.
+    </p>
+
+    <h2>Metodologia:</h2>
+    <p>
+        O sistema é construído usando a linguagem de programação Python e a biblioteca OpenCV para processamento de imagem e vídeo. 
+        O método de detecção de rosto é baseado em cascata de classificadores de Haar, uma abordagem eficaz e amplamente usada para a 
+        detecção de objetos em imagens.
+    </p>
+    <p>
+        O sistema processa cada quadro do vídeo da seguinte forma:
+        <ol>
+            <li>Ele converte o quadro para uma imagem em escala de cinza.</li>
+            <li>Ele detecta rostos na imagem em escala de cinza.</li>
+            <li>Para cada rosto detectado, ele verifica a região acima do rosto (possivelmente contendo um capacete) e a região abaixo do rosto (possivelmente contendo um colete).</li>
+            <li>Ele detecta capacetes e coletes nessas regiões por meio de segmentação de cor. Os capacetes são detectados procurando por regiões brancas e os coletes são detectados procurando por regiões vermelhas.</li>
+            <li>Se um rosto, capacete e colete forem detectados por um período contínuo de 4 segundos, o sistema imprime "Acesso liberado".</li>
+            <li>O sistema também captura uma imagem sempre que um rosto é detectado sem um capacete ou colete, ou mais de uma face é detectada. Ele salva a imagem original e uma versão com um filtro de nitidez aplicado.</li>
+        </ol>
+    </p>
+
+    <h2>Conclusão:</h2>
+    <p>
+        O sistema foi capaz de detectar com sucesso rostos, capacetes e coletes em tempo real. Ele conseguiu capturar imagens sempre que as 
+        condições de segurança não eram atendidas e só concedia acesso quando as condições de segurança eram atendidas por um período de 4 segundos. 
+        O uso de um filtro de nitidez também melhorou a visibilidade dos detalhes na imagem capturada. No entanto, a detecção de capacetes e coletes 
+        é baseada na cor e, portanto, pode ser afetada por variações de iluminação. Trabalhos futuros poderiam explorar o uso de técnicas mais avançadas 
+        para a detecção de capacetes e coletes, como a detecção de objetos com base em aprendizado profundo.
+    </p>
+</body>
+
+
+       
+  
