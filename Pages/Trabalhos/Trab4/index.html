@@ -102,7 +102,7 @@
   </style>
 </head>
 <body>
-    <h1>TRABALHO - PROCESSAMENTO DE VÍDEO 2023.1</h1>
+    <h1>TRABALHO - PROCESSAMENTO DE VÍDEO 2023.2</h1>
 
     <div class="section">
         <h2>Parte 4: Elaboração de Aplicação do SPV e Questionário Avaliativo (AQA)Tarefa</h2>
@@ -122,124 +122,130 @@
         <div>Código explicado:</span>
           <p>Essa é a etapa inicial do processo. Representa o ponto de partida do sistema ou programa. Basta rodar o código para inciiar os testes.</p>
           <pre><code>
-            #contagem,filtro e feacture de abertura
-            import cv2
-            import numpy as np
-            import time
-            
-            cascade_path = "haarcascade_frontalface_default.xml"
-            face_cascade = cv2.CascadeClassifier(cascade_path)
-            
-            def detect_white_helmet(roi):
-                if roi.size == 0:
-                    return roi
-                lower_white = np.array([200, 200, 200])
-                upper_white = np.array([255, 255, 255])
-                mask = cv2.inRange(roi, lower_white, upper_white)
-                contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-                if contours:
-                    largest_contour = max(contours, key=cv2.contourArea)
-                    x, y, w, h = cv2.boundingRect(largest_contour)
-                    if w * h > 1000:
-                        cv2.rectangle(roi, (x, y), (x + w, y + h), (0, 0, 255), 2)
-                return roi
-            
-            def detect_collar_color(roi):
-                if roi.size == 0:
-                    return roi
-                hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
-                lower_red = np.array([0, 70, 50])
-                upper_red = np.array([10, 255, 255])
-                lower_red2 = np.array([170, 70, 50])
-                upper_red2 = np.array([180, 255, 255])
-                mask1 = cv2.inRange(hsv, lower_red, upper_red)
-                mask2 = cv2.inRange(hsv, lower_red2, upper_red2)
-                mask = cv2.bitwise_or(mask1, mask2)
-                contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-                if contours:
-                    largest_contour = max(contours, key=cv2.contourArea)
-                    x, y, w, h = cv2.boundingRect(largest_contour)
-                    if w * h > 1000:
-                        cv2.rectangle(roi, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                return roi
-            
-            def apply_sharpness_filter(image):
-                kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]], dtype=np.float32)
-                return cv2.filter2D(image, -1, kernel)
-            
-            cap = cv2.VideoCapture(0)
-            snapshot_count = 0
+import cv2
+import numpy as np
+import time
+
+cascade_path = "haarcascade_frontalface_default.xml"
+face_cascade = cv2.CascadeClassifier(cascade_path)
+
+def detect_white_helmet(roi):
+    detected = False
+    if roi.size == 0:
+        return roi, detected
+    lower_white = np.array([200, 200, 200])
+    upper_white = np.array([255, 255, 255])
+    mask = cv2.inRange(roi, lower_white, upper_white)
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    if contours:
+        largest_contour = max(contours, key=cv2.contourArea)
+        x, y, w, h = cv2.boundingRect(largest_contour)
+        if w * h > 1000:
+            cv2.rectangle(roi, (x, y), (x + w, y + h), (0, 0, 255), 2)
+            detected = True
+    return roi, detected
+
+def detect_collar_color(roi):
+    detected = False
+    if roi.size == 0:
+        return roi, detected
+    hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+    lower_red = np.array([0, 70, 50])
+    upper_red = np.array([10, 255, 255])
+    lower_red2 = np.array([170, 70, 50])
+    upper_red2 = np.array([180, 255, 255])
+    mask1 = cv2.inRange(hsv, lower_red, upper_red)
+    mask2 = cv2.inRange(hsv, lower_red2, upper_red2)
+    mask = cv2.bitwise_or(mask1, mask2)
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    if contours:
+        largest_contour = max(contours, key=cv2.contourArea)
+        x, y, w, h = cv2.boundingRect(largest_contour)
+        if w * h > 1000:
+            cv2.rectangle(roi, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            detected = True
+    return roi, detected
+
+def apply_sharpness_filter(image):
+    kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]], dtype=np.float32)
+    return cv2.filter2D(image, -1, kernel)
+
+cap = cv2.VideoCapture(0)
+snapshot_count = 0
+start_time = None
+face_detection_count = 0
+last_face_count_time = None
+safety_check_start = None
+access_granted = False
+last_access_time = None
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        print("Erro ao capturar o quadro da webcam.")
+        break
+
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=7, minSize=(60, 60))
+
+    helmet_detected = False
+    collar_detected = False
+
+    for x, y, w, h in faces:
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+
+        y0, y1 = max(0, y - h), y
+        roi_helmet = frame[y0:y1, x : x + w]
+        roi_helmet, helmet_detected = detect_white_helmet(roi_helmet)
+        frame[y0:y1, x : x + w] = roi_helmet
+
+        y0, y1 = y + int(h * 1.1), min(y + int(h * 2.1), frame.shape[0])
+        roi_collar = frame[y0:y1, x : x + w]
+        roi_collar, collar_detected = detect_collar_color(roi_collar)
+        frame[y0:y1, x : x + w] = roi_collar
+
+    if len(faces) > 0:
+        if start_time is None:
+            if (last_face_count_time is None) or (time.time() - last_face_count_time >= 8):
+                face_detection_count += 1
+                last_face_count_time = time.time()
+            start_time = time.time()
+
+    if helmet_detected and collar_detected:
+        if safety_check_start is None:
+            safety_check_start = time.time()
+        elif time.time() - safety_check_start >= 3:
+            if (last_access_time is None) or (time.time() - last_access_time >= 8):
+                print("Capacete detectado!")
+                print("Colete detectado!")
+                print("Acesso liberado")
+                access_granted = True
+                last_access_time = time.time()
+                safety_check_start = None
+                start_time = None
+    else:
+        safety_check_start = None
+        access_granted = False
+
+    if not access_granted:
+        if start_time is not None and time.time() - start_time >= 3.5:
+            cv2.imwrite(f'snapshot_{snapshot_count}_original.jpg', frame)
+            sharp_frame = apply_sharpness_filter(frame)
+            cv2.imwrite(f'snapshot_{snapshot_count}_filtered.jpg', sharp_frame)
+            snapshot_count += 1
             start_time = None
-            face_detection_count = 0
-            last_face_count_time = None
-            safety_check_start = None
-            
-            while True:
-                ret, frame = cap.read()
-                if not ret:
-                    print("Erro ao capturar o quadro da webcam.")
-                    break
-            
-                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=7, minSize=(60, 60))
-            
-                helmet_detected = False
-                collar_detected = False
-            
-                for x, y, w, h in faces:
-                    cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
-            
-                    y0, y1 = max(0, y - h), y
-                    roi_helmet = frame[y0:y1, x : x + w]
-                    roi_with_helmet = detect_white_helmet(roi_helmet)
-                    frame[y0:y1, x : x + w] = roi_with_helmet
-                    if np.any(roi_with_helmet):
-                        helmet_detected = True
-            
-                    y0, y1 = y + int(h * 1.1), min(y + int(h * 2.1), frame.shape[0])
-                    roi_collar = frame[y0:y1, x : x + w]
-                    roi_with_collar = detect_collar_color(roi_collar)
-                    frame[y0:y1, x : x + w] = roi_with_collar
-                    if np.any(roi_with_collar):
-                        collar_detected = True
-            
-                #CONTAGEM DE ROSTO DISTINTO
-                if len(faces) > 0 and start_time is None:
-                    if (last_face_count_time is None) or (time.time() - last_face_count_time >= 8):
-                        face_detection_count += 1
-                        last_face_count_time = time.time()
-                    start_time = time.time()
-            
-                
-                #CAPTURA DE FOTO CASO N ESTEJA USANDO EPI
-                if start_time is not None and time.time() - start_time >= 1.5:
-                    if not helmet_detected or not collar_detected or len(faces) > 0:
-                        cv2.imwrite(f'snapshot_{snapshot_count}_original.jpg', frame)
-                        sharp_frame = apply_sharpness_filter(frame)
-                        cv2.imwrite(f'snapshot_{snapshot_count}_filtered.jpg', sharp_frame)
-                        snapshot_count += 1
-                    start_time = None
-                    
-                #MENSAGEM DE ACESSO LIBERADO
-                if helmet_detected and collar_detected:
-                    if safety_check_start is None:
-                        safety_check_start = time.time()
-                    elif time.time() - safety_check_start >= 4:
-                        print("Acesso liberado")
-                        safety_check_start = None
-                else:
-                    safety_check_start = None
-            
-                cv2.imshow("Detecção de Objetos", frame)
-            
-                key = cv2.waitKey(1) & 0xFF
-                if key == ord('q'):
-                    break
-            
-            cap.release()
-            cv2.destroyAllWindows()
-            
-            print(f"Número total de detecções de rosto: {face_detection_count}")
+
+    cv2.imshow("Detecção de Objetos", frame)
+
+    key = cv2.waitKey(1) & 0xFF
+    if key == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
+
+print(f"Número total de detecções de rosto: {face_detection_count}")
+                  
           </code></pre>
         </div>
         

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 50px;
+      color: black;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 24px;
+      font-weight: bolder;
+      padding-bottom: 30px;
+    }
+    
+    .display-grid-buttons{
+        gap: 30px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        padding: 40px;
+    }
+
+    .btn-connection{
+        width: 100%;
+        height: 50px;
+        border-radius: 7px;
+        background-color: rgb(0, 22, 88);
+        border: 1px solid white; 
+        text-align: center;
+        color: white;
+    }
+
+    .btn-connection:hover{
+        transform: scale(1.1);
+        background-color: cadetblue;
+    }
+
+    .btn-connection>span{
+        line-height: 50px;
+    }
+
+    h2 {
+      color: #666;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 20px 0px 20px 0px;
+    }
+
+    p {
+      color: black;
+      font-size: 16px;
+      text-align: justify;
+    }
+    
+    .center{
+        display: flex; flex-direction: row; justify-content: center; width: 100%;
+        gap: 30px;
+        padding: 20px 0px 20px 0px;
+    }
+
+    code {
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      background-color: #f5f5f5;
+      padding: 2px 4px;
+    }
+
+    pre {
+      background-color: #f5f5f5;
+      padding: 10px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .itens>div{
+      margin-top: 30px;
+      padding-bottom: 30px;
+      border-bottom: 1px dashed gray;
+    }
+
+    .itens span{
+      color: black;
+      font-weight: 700;
+      letter-spacing: 1px;
+      font-size: 16px;
+      text-decoration: underline;
+      text-transform: uppercase;
+      line-height: 20px;
+    }
+
+
+    .itens p {
+      text-align: justify;
+    }
+  </style>
+</head>
+<body>
+    <h1>TRABALHO - PROCESSAMENTO DE VÍDEO 2023.2</h1>
+
+    <div class="section">
+        <h2>Parte 6: Elaboração do Relatório Final do Trabalho (RFT)Tarefa</h2>
+
+        <br/>
+        <p><b>TEMA:</b> Analise condicional do uso de EPI's por identificação de cores da roupa.</p>
+        <br/>
+        
+      <div>
+        <h2>Introdução:</h2>
+        <p>
+            Neste trabalho, desenvolvemos um sistema de detecção de rostos, capacetes e coletes em tempo real usando uma câmera de vídeo. O objetivo é verificar se um indivíduo está usando equipamento de segurança adequado (capacete e colete) por um período de 4 segundos antes de conceder acesso a uma área particular. Isso é especialmente útil em locais de trabalho industriais ou de construção onde o uso de equipamento de segurança é obrigatório.
+            O objetivo é monitorar o uso correto desses itens de segurança em um ambiente específico.
+        </p>
+    
+        <h2>Metodologia:</h2>
+        <p>
+            O sistema é construído usando a linguagem de programação Python e a biblioteca OpenCV para processamento de imagem e vídeo. 
+            O método de detecção de rosto é baseado em cascata de classificadores de Haar, uma abordagem eficaz e amplamente usada para a 
+            detecção de objetos em imagens.
+        </p>
+
+        <img src="../../../Assets/Imgs/FLUXOGRAMA.png" width="100%" height="auto">
+        <p>
+            O sistema processa cada quadro do vídeo da seguinte forma:
+            <ol>
+                <li>Ele converte o quadro para uma imagem em escala de cinza.</li>
+                <li>Ele detecta rostos na imagem em escala de cinza.</li>
+                <li>Para cada rosto detectado, ele verifica a região acima do rosto (possivelmente contendo um capacete) e a região abaixo do rosto (possivelmente contendo um colete).</li>
+                <li>Ele detecta capacetes e coletes nessas regiões por meio de segmentação de cor. Os capacetes são detectados procurando por regiões brancas e os coletes são detectados procurando por regiões vermelhas.</li>
+                <li>Se um rosto, capacete e colete forem detectados por um período contínuo de 4 segundos, o sistema imprime "Acesso liberado".</li>
+                <li>O sistema também captura uma imagem sempre que um rosto é detectado sem um capacete ou colete, ou mais de uma face é detectada. Ele salva a imagem original e uma versão com um filtro de nitidez aplicado.</li>
+            </ol>
+        </p>
+
+        <H2>Cenário:</H2>
+      
+        <p>O código foi criado pensando em um cenário específico, ou seja ele irá funcionar apenas para o modelo que nós desenvolvemos. Caso tente ser usado em outro objetivo ele pode apresentar falhas.(por exemplo: no nosso caso o capacete é branco, ou seja se for tentar capturar as imagens dos funcionarios em um fundo branco, o codigo não irá funcionar)</p>
+  
+        <p>O cenário escolhido, foi um cenário onde a câmera ficará em cima do local onde os funcionários irão bater o ponto, numa proximidade de até 50cm da câmera. Resumindo, ele caminhara até o local de batimento de ponto, virara para a câmera e nesse tempo a câmera sera capaz de analisar se ele esta usando o capacete e o colete, alem disso ela contara quantos funcionarios passam no local. Caso o mesmo esteja usando os equipamentos, tera um tempo de 4 segundos de fidelidade, ou seja caso ela detecte por mais de 4 segundos os equipamentos, o sistema identificara que ele esta usando corretamente os itens, e ira liberar seu acesso. Caso contrario, ele ira ficara tirando snapshots do funcionario, e aplicara tambem um filtro de nitidez para melhorar a imagem</p>
+      </div>
+
+
+      <h2>Dificuldades e problemas:</h2>
+      <p>Como o código envolve muitas variavéis de tempo, isso acabou atrasando um pouco o desenvolvimento, por ser algo complexo tivemos que trabalhar bastante para deixar tudo encaixado de maneira certa, sem que um tempo impactasse o outro no decorrer do código.</p>
+      <p>O código pode apresentyar falhas ao depender da luz, e do cenário de fundo. pois como ele identifica duas cores(branco e vermelho), se o fundo estiver em uma dessas cores, ele ira falhar.</p>
+
+      <h2>Conclusão:</h2>
+    <p>
+        O sistema foi capaz de detectar com sucesso rostos, capacetes e coletes em tempo real. Ele conseguiu capturar imagens sempre que as 
+        condições de segurança não eram atendidas e só concedia acesso quando as condições de segurança eram atendidas por um período de 4 segundos. 
+        O uso de um filtro de nitidez também melhorou a visibilidade dos detalhes na imagem capturada. No entanto, a detecção de capacetes e coletes 
+        é baseada na cor e, portanto, pode ser afetada por variações de iluminação. Trabalhos futuros poderiam explorar o uso de técnicas mais avançadas 
+        para a detecção de capacetes e coletes, como a detecção de objetos com base em aprendizado profundo.
+    </p>
+       
